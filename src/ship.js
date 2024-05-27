@@ -1,14 +1,18 @@
 export default class Ship {
-  #length;
+  #shipLength;
   #nHits = 0;
 
-  constructor(length) {
-    if (typeof length !== "number" || length < 1) {
+  constructor(shipLength) {
+    if (shipLength < 1 || !Number.isInteger(shipLength)) {
       throw new Error(
         "Ship constructor requires a length that is an integer greater than zero."
       );
     }
-    this.#length = length;
+    this.#shipLength = shipLength;
+  }
+
+  get shipLength() {
+    return this.#shipLength;
   }
 
   hit() {
@@ -16,6 +20,6 @@ export default class Ship {
   }
 
   isSunk() {
-    return this.#nHits >= this.#length;
+    return this.#nHits >= this.#shipLength;
   }
 }
