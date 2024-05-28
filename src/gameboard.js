@@ -1,56 +1,57 @@
 import Ship from "./ship";
 
 class BoardSpace {
-  #isShip = false;
-  #isHit = false;
-
-  get isShip() {
-    return this.#isShip;
-  }
-
-  get isHit() {
-    return this.#isHit;
-  }
-
-  hit() {
-    if (!this.isHit()) {
-      this.#isHit = true;
-    }
-  }
+  ship = null;
+  isHit = false;
 }
 
 export default class Gameboard {
-  #shipLengths = [5, 4, 3, 3, 2];
-  #ships = [];
-  #size;
+  #size = 10;
   #board;
+  #ships = [];
 
-  constructor(size) {
-    this.#size = size;
-    this.#board = this.#createBoard(size);
-    this.#shipLengths.forEach((length) => {
-      this.#ships.push(new Ship(length));
-    });
+  constructor() {
+    this.#clearBoard();
   }
 
   get board() {
     return this.#board;
   }
 
-  #createBoard(size) {
-    const board = [];
-    for (let i = 0; i < size * size; i++) {
-      board.push(new BoardSpace());
+  #clearBoard() {
+    this.#board = [];
+    for (let i = 0; i < this.#size * this.#size; i++) {
+      this.#board.push(new BoardSpace());
     }
-    return board;
   }
 
-  #getIndexFromLoc(row, col) {
-    if (row < 0 || row >= this.#size || col < 0 || col >= this.#size) {
+  #getBoardIndex(row, column) {
+    if (row < 0 || row >= this.#size || column < 0 || column > this.#size) {
       return null;
     }
-    return row * this.#size + col;
+    return row * this.#size + column;
   }
 
-  placeShipAt(row, col) {}
+  placeShip(shipLength, row, column, isHorizontal = true) {
+    const ship = new Ship(shipLength);
+    const boardIndices = [];
+    for (let i = 0; i < shipLength; i++) {
+      if (isHorizontal) {
+        boardIndices.push(this.#getBoardIndex(row, column + i));
+      } else {
+        boardIndices.push(this.#getBoardIndex(row + i, column));
+      }
+
+      if (
+        boardIndices[i] === null ||
+        this.#board[boardIndices[i]].ship !== null
+      ) {
+        return;
+      }
+    }
+    boardIndices.forEach((index) => {
+      this.#board[index].ship = ship;
+    });
+    this.#ships.push(ship);
+  }
 }
