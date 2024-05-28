@@ -54,4 +54,17 @@ export default class Gameboard {
     });
     this.#ships.push(ship);
   }
+
+  receiveAttack(row, column) {
+    const boardIndex = this.#getBoardIndex(row, column);
+    if (boardIndex === null || this.#board[boardIndex].isHit) {
+      return;
+    }
+
+    const boardSpace = this.#board[boardIndex];
+    if (boardSpace.ship) {
+      boardSpace.ship.hit();
+    }
+    boardSpace.isHit = true;
+  }
 }

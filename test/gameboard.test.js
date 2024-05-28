@@ -49,4 +49,36 @@ describe("Gameboard unit tests", () => {
       expect(spacesWithShip).toHaveLength(5);
     });
   });
+
+  describe("receiveAttack()", () => {
+    beforeEach(() => {
+      gameboard.placeShip(2, 0, 0);
+    });
+
+    test("attack a ship", () => {
+      gameboard.receiveAttack(0, 0);
+      expect(gameboard.board[0].isHit).toBe(true);
+      gameboard.receiveAttack(0, 1);
+      expect(gameboard.board[0].ship.isSunk()).toBe(true);
+    });
+
+    test("attack an empty space", () => {
+      gameboard.receiveAttack(0, 1);
+      expect(gameboard.board[1].isHit).toBe(true);
+    });
+
+    test("attack an out of bounds space", () => {
+      gameboard.receiveAttack(100, 100);
+      const hitSpaces = gameboard.board.filter((space) => space.isHit);
+      expect(hitSpaces).toHaveLength(0);
+    });
+
+    test("attack a hit space", () => {
+      gameboard.receiveAttack(0, 0);
+      gameboard.receiveAttack(0, 0);
+      const hitSpaces = gameboard.board.filter((space) => space.isHit);
+      expect(hitSpaces).toHaveLength(1);
+      expect(gameboard.board[0].ship.isSunk()).toBe(false);
+    });
+  });
 });
