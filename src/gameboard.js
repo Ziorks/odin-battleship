@@ -67,4 +67,8 @@ export default class Gameboard {
     }
     boardSpace.isHit = true;
   }
+
+  allShipsSunk() {
+    return this.#ships.reduce((accum, ship) => accum && ship.isSunk(), true);
+  }
 }

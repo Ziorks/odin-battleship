@@ -81,4 +81,32 @@ describe("Gameboard unit tests", () => {
       expect(gameboard.board[0].ship.isSunk()).toBe(false);
     });
   });
+
+  describe("allShipsSunk()", () => {
+    beforeEach(() => {
+      gameboard.placeShip(1, 0, 0);
+    });
+
+    test("One ship: not sunk", () => {
+      expect(gameboard.allShipsSunk()).toBe(false);
+    });
+
+    test("One ship: sunk", () => {
+      gameboard.receiveAttack(0, 0);
+      expect(gameboard.allShipsSunk()).toBe(true);
+    });
+
+    test("Two ships: one sunk, one not sunk", () => {
+      gameboard.placeShip(1, 0, 1);
+      gameboard.receiveAttack(0, 0);
+      expect(gameboard.allShipsSunk()).toBe(false);
+    });
+
+    test("Two ships: both sunk", () => {
+      gameboard.placeShip(1, 0, 1);
+      gameboard.receiveAttack(0, 0);
+      gameboard.receiveAttack(0, 1);
+      expect(gameboard.allShipsSunk()).toBe(true);
+    });
+  });
 });
