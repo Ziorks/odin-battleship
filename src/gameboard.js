@@ -32,7 +32,7 @@ export default class Gameboard {
     return row * this.#size + column;
   }
 
-  placeShip(shipLength, row, column, isHorizontal = true) {
+  placeShip(shipLength, [row, column], isHorizontal = true) {
     const ship = new Ship(shipLength);
     const boardIndices = [];
     for (let i = 0; i < shipLength; i++) {
@@ -55,7 +55,7 @@ export default class Gameboard {
     this.#ships.push(ship);
   }
 
-  receiveAttack(row, column) {
+  receiveAttack([row, column]) {
     const boardIndex = this.#getBoardIndex(row, column);
     if (boardIndex === null || this.#board[boardIndex].isHit) {
       return;
