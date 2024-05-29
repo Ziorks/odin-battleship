@@ -3,3 +3,34 @@
   margin: 0;
   padding: 0;
 }
+
+.board {
+  display: grid;
+  width: max-content;
+  gap: 2px;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(11, 20px);
+  grid-auto-rows: 20px;
+}
+
+.boardSpace {
+  background-color: black;
+}
+
+.boardSpace.ship {
+  background-color: grey;
+}
+
+.boardSpace.hit {
+  background-color: yellow;
+}
+
+.boardSpace.ship.hit {
+  background-color: red;
+}
+
+.boardLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

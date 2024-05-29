@@ -1,20 +1,31 @@
 import Player from "./player";
+import ScreenController from "./screenController";
 
-const player1 = new Player("Player 1");
-const player2 = new Player("Player 2");
+export default class Game {
+  #screenController = new ScreenController();
+  #player1;
+  #player2;
 
-//temporary function to place ships
-(() => {
-  const testShips = [
-    { length: 2, location: [0, 0] },
-    { length: 3, location: [2, 0] },
-    { length: 3, location: [4, 0] },
-    { length: 4, location: [6, 0] },
-    { length: 5, location: [8, 0] },
-  ];
+  constructor(player1Name, player2Name) {
+    this.#player1 = new Player(player1Name);
+    this.#player2 = new Player(player2Name);
 
-  testShips.forEach((ship) => {
-    player1.board.placeShip(ship.length, ship.location);
-    player2.board.placeShip(ship.length, ship.location);
-  });
-})();
+    const testShips = [
+      { length: 2, location: [0, 0] },
+      { length: 3, location: [2, 0] },
+      { length: 3, location: [4, 0] },
+      { length: 4, location: [6, 0] },
+      { length: 5, location: [8, 0] },
+    ];
+
+    testShips.forEach((ship) => {
+      this.#player1.board.placeShip(ship.length, ship.location);
+      this.#player2.board.placeShip(ship.length, ship.location);
+    });
+
+    this.#player1.board.receiveAttack([0, 0]);
+    this.#player1.board.receiveAttack([1, 0]);
+
+    this.#screenController.renderBoard(this.#player1.board.board);
+  }
+}
