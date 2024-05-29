@@ -11,7 +11,7 @@ export default class Player {
   }
 
   get board() {
-    return this.#board;
+    return this.#board.board;
   }
 
   get name() {
@@ -20,5 +20,17 @@ export default class Player {
 
   get isComputer() {
     return this.#isComputer;
+  }
+
+  placeShip(length, location) {
+    this.#board.placeShip(length, location);
+  }
+
+  receiveAttack(location) {
+    this.#board.receiveAttack(location);
+  }
+
+  allShipsSunk() {
+    return this.#board.allShipsSunk();
   }
 }
