@@ -1,8 +1,6 @@
 import Player from "./player";
-import ScreenController from "./screenController";
 
 export default class Game {
-  #screenController = new ScreenController();
   #player1;
   #player2;
 
@@ -19,13 +17,19 @@ export default class Game {
     ];
 
     testShips.forEach((ship) => {
-      this.#player1.board.placeShip(ship.length, ship.location);
-      this.#player2.board.placeShip(ship.length, ship.location);
+      this.#player1.placeShip(ship.length, ship.location);
+      this.#player2.placeShip(ship.length, ship.location);
     });
 
-    this.#player1.board.receiveAttack([0, 0]);
-    this.#player1.board.receiveAttack([1, 0]);
+    this.#player1.receiveAttack([0, 0]);
+    this.#player1.receiveAttack([1, 0]);
+  }
 
-    this.#screenController.renderBoard(this.#player1.board.board);
+  get player1Board() {
+    return this.#player1.board;
+  }
+
+  get player2Board() {
+    return this.#player2.board;
   }
 }

@@ -1,4 +1,4 @@
 import "./style.css";
-import Game from "./game";
+import ScreenController from "./screenController";
 
-new Game("player 1", "player 2");
+new ScreenController();

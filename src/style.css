@@ -1,3 +1,7 @@
+:root {
+  --gridSize: 25px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,20 +12,30 @@ body {
   background-color: rgb(150, 187, 233);
 }
 
+.playerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .board {
-  margin: 20px auto;
+  margin: 10px 0;
   background-color: black;
   box-shadow: 3px 3px 10px rgb(0, 0, 0);
   display: grid;
   width: max-content;
   gap: 2px;
   grid-auto-flow: row;
-  grid-template-columns: repeat(11, 20px);
-  grid-auto-rows: 20px;
+  grid-template-columns: repeat(11, var(--gridSize));
+  grid-auto-rows: var(--gridSize);
 }
 
 .board > div {
   background-color: white;
+}
+
+#player2_container .boardSpace:not(.hit) {
+  cursor: pointer;
 }
 
 .boardSpace.ship {
