@@ -56,26 +56,26 @@ describe("Gameboard unit tests", () => {
     });
 
     test("attack a ship", () => {
-      gameboard.receiveAttack([0, 0]);
+      expect(gameboard.receiveAttack([0, 0])).toBe("Hit");
       expect(gameboard.board[0].isHit).toBe(true);
-      gameboard.receiveAttack([0, 1]);
+      expect(gameboard.receiveAttack([0, 1])).toBe("Hit");
       expect(gameboard.board[0].ship.isSunk()).toBe(true);
     });
 
     test("attack an empty space", () => {
-      gameboard.receiveAttack([0, 1]);
-      expect(gameboard.board[1].isHit).toBe(true);
+      expect(gameboard.receiveAttack([0, 2])).toBe("Miss");
+      expect(gameboard.board[2].isHit).toBe(true);
     });
 
     test("attack an out of bounds space", () => {
-      gameboard.receiveAttack([100, 100]);
+      expect(gameboard.receiveAttack([100, 100])).toBeNull();
       const hitSpaces = gameboard.board.filter((space) => space.isHit);
       expect(hitSpaces).toHaveLength(0);
     });
 
     test("attack a hit space", () => {
-      gameboard.receiveAttack([0, 0]);
-      gameboard.receiveAttack([0, 0]);
+      expect(gameboard.receiveAttack([0, 0])).toBe("Hit");
+      expect(gameboard.receiveAttack([0, 0])).toBeNull();
       const hitSpaces = gameboard.board.filter((space) => space.isHit);
       expect(hitSpaces).toHaveLength(1);
       expect(gameboard.board[0].ship.isSunk()).toBe(false);

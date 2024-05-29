@@ -58,14 +58,16 @@ export default class Gameboard {
   receiveAttack([row, column]) {
     const boardIndex = this.#getBoardIndex(row, column);
     if (boardIndex === null || this.#board[boardIndex].isHit) {
-      return;
+      return null;
     }
 
     const boardSpace = this.#board[boardIndex];
+    boardSpace.isHit = true;
     if (boardSpace.ship) {
       boardSpace.ship.hit();
+      return "Hit";
     }
-    boardSpace.isHit = true;
+    return "Miss";
   }
 
   allShipsSunk() {
