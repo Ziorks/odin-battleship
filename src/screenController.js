@@ -116,6 +116,14 @@ export default class ScreenController {
       if (e.target.className === "startBtn") {
         this.#handleStartFormSubmit(e);
       }
+
+      if (e.target.className === "boardSpace") {
+        const row = Number(e.target.dataset.row);
+        const column = Number(e.target.dataset.column);
+        const location = [row, column];
+        this.#game.playRound(location);
+        this.#updateGameDisplay();
+      }
     });
   }
 }
