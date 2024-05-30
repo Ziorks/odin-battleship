@@ -10,6 +10,55 @@
 
 body {
   background-color: rgb(150, 187, 233);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  text-align: center;
+  font-size: 3em;
+  font-weight: bold;
+  padding: 20px 0;
+  border-bottom: 2px solid black;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.gamemode {
+  text-align: center;
+}
+
+.startForm {
+  display: none;
+  text-align: center;
+}
+
+.startForm label {
+  font-size: 1.5rem;
+}
+
+.startForm input {
+  font-size: 1.2rem;
+  padding: 5px;
+}
+
+.gamemodeBtn,
+.startBtn {
+  margin: 15px auto;
+  display: block;
+  padding: 5px;
+  font-size: 1.2rem;
+}
+
+.game {
+  display: none;
 }
 
 .playerContainer {
@@ -34,7 +83,7 @@ body {
   background-color: white;
 }
 
-#player2_container .boardSpace:not(.hit) {
+#opponentContainer .boardSpace:not(.hit) {
   cursor: pointer;
 }
 

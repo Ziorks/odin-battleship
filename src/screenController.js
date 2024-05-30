@@ -1,49 +1,121 @@
+import Player from "./player";
 import Game from "./game";
 
 export default class ScreenController {
-  #game = new Game("player 1", "player 2"); //todo:get names from form
-  #player1Container = document.getElementById("player1_container");
-  #player2Container = document.getElementById("player2_container");
+  #game;
 
   constructor() {
-    this.#updateBoard(this.#game.player1Board, this.#player1Container);
-    this.#updateBoard(this.#game.player2Board, this.#player2Container);
+    this.#addEventListeners();
   }
 
-  #updateBoard(board, container) {
+  #updateGameDisplay() {
+    const opponentContainer = document.getElementById("opponentContainer");
+    const playerContainer = document.getElementById("playerContainer");
+
+    opponentContainer.querySelector(".playerName").textContent =
+      this.#game.player2.name;
+    playerContainer.querySelector(".playerName").textContent =
+      this.#game.player1.name;
+
+    this.#drawBoard(this.#game.player2.board, opponentContainer, true);
+    this.#drawBoard(this.#game.player1.board, playerContainer, false);
+  }
+
+  #drawBoard(board, container, isOpponent) {
     const boardDiv = container.querySelector(".board");
+    boardDiv.innerHTML = "";
     for (let row = 0; row < 11; row++) {
       for (let column = 0; column < 11; column++) {
         const boardRow = 9 - row;
         const boardColumn = column - 1;
+        const boardSpaceDiv = document.createElement("div");
         if (column === 0 && row === 10) {
-          const cornerSpace = document.createElement("div");
-          boardDiv.appendChild(cornerSpace);
+          boardSpaceDiv.className = "boardCorner";
         } else if (column === 0) {
-          const rowLabel = document.createElement("div");
-          rowLabel.className = "boardLabel";
-          rowLabel.textContent = boardRow;
-          boardDiv.appendChild(rowLabel);
+          boardSpaceDiv.className = "boardLabel";
+          boardSpaceDiv.textContent = boardRow;
         } else if (row === 10) {
-          const columnLabel = document.createElement("div");
-          columnLabel.className = "boardLabel";
-          columnLabel.textContent = boardColumn;
-          boardDiv.appendChild(columnLabel);
+          boardSpaceDiv.className = "boardLabel";
+          boardSpaceDiv.textContent = boardColumn;
         } else {
           const space = board[boardRow * 10 + boardColumn];
-          const spaceDiv = document.createElement("div");
-          spaceDiv.dataset.row = boardRow;
-          spaceDiv.dataset.column = boardColumn;
-          spaceDiv.className = "boardSpace";
-          if (space.ship) {
-            spaceDiv.classList.add("ship");
+          boardSpaceDiv.dataset.row = boardRow;
+          boardSpaceDiv.dataset.column = boardColumn;
+          boardSpaceDiv.className = "boardSpace";
+          if ((space.ship && !isOpponent) || (space.ship && space.isHit)) {
+            boardSpaceDiv.classList.add("ship");
           }
           if (space.isHit) {
-            spaceDiv.classList.add("hit");
+            boardSpaceDiv.classList.add("hit");
           }
-          boardDiv.appendChild(spaceDiv);
         }
+        boardDiv.appendChild(boardSpaceDiv);
       }
     }
+  }
+
+  #handleGamemodeSelect(e) {
+    const gamemodeDiv = document.querySelector(".gamemode");
+    const singlePlayerForm = document.getElementById("singlePlayerForm");
+    const multiPlayerLocalForm = document.getElementById(
+      "multiPlayerLocalForm"
+    );
+    const multiPlayerOnlineForm = document.getElementById(
+      "multiPlayerOnlineForm"
+    );
+    gamemodeDiv.style.display = "none";
+
+    switch (e.target.id) {
+      case "singlePlayerBtn":
+        singlePlayerForm.style.display = "block";
+        break;
+      case "multiPlayerLocalBtn":
+        multiPlayerLocalForm.style.display = "block";
+        break;
+      case "multiPlayerOnlineBtn":
+        multiPlayerOnlineForm.style.display = "block";
+        break;
+    }
+  }
+
+  #handleStartFormSubmit(e) {
+    e.preventDefault();
+    const player1Name =
+      document.getElementById("player1Name").value || "Player 1";
+    const player1 = new Player(player1Name);
+    let player2Name;
+    let player2;
+
+    switch (e.target.id) {
+      case "singlePlayerStart":
+        player2Name = "Computer";
+        player2 = new Player(player2Name, true);
+        break;
+      case "multiPlayerLocalStart":
+        player2Name =
+          document.getElementById("player2Name").value || "Player 2";
+        player2 = new Player(player2Name);
+        break;
+      case "multiPlayerOnlineStart":
+        //do later maybe?????
+        break;
+    }
+
+    this.#game = new Game(player1, player2);
+    document.querySelector(".start").style.display = "none";
+    document.querySelector(".game").style.display = "block";
+    this.#updateGameDisplay();
+  }
+
+  #addEventListeners() {
+    window.addEventListener("click", (e) => {
+      if (e.target.className === "gamemodeBtn") {
+        this.#handleGamemodeSelect(e);
+      }
+
+      if (e.target.className === "startBtn") {
+        this.#handleStartFormSubmit(e);
+      }
+    });
   }
 }

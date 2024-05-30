@@ -6,13 +6,79 @@
     <title>Odin Battleship</title>
   </head>
   <body>
-    <div class="playerContainer" id="player2_container">
-      <h2 class="playerName">Computer</h2>
-      <div class="board"></div>
-    </div>
-    <div class="playerContainer" id="player1_container">
-      <div class="board"></div>
-      <h2 class="playerName">Player 1</h2>
-    </div>
+    <header>Battleship</header>
+    <main>
+      <div class="start">
+        <div class="gamemode">
+          <h2>Select a Gamemode</h2>
+          <button class="gamemodeBtn" id="singlePlayerBtn">
+            Player vs Bot
+          </button>
+          <button class="gamemodeBtn" id="multiPlayerLocalBtn" disabled>
+            Player vs Player (local)
+          </button>
+          <button class="gamemodeBtn" id="multiPlayerOnlineBtn" disabled>
+            Player vs Player (online)
+          </button>
+        </div>
+        <form class="startForm" id="singlePlayerForm">
+          <div>
+            <label for="player1Name">Player Name: </label>
+            <input
+              type="text"
+              name="player1Name"
+              id="player1Name"
+              placeholder="Player 1" />
+          </div>
+          <button class="startBtn" id="singlePlayerStart" type="submit">
+            Start Game
+          </button>
+        </form>
+        <form class="startForm" id="multiPlayerLocalForm">
+          <div>
+            <label for="player1Name">Player 1 Name: </label>
+            <input
+              type="text"
+              name="player1Name"
+              id="player1Name"
+              placeholder="Player 1" />
+          </div>
+          <div>
+            <label for="player2Name">Player 2 Name: </label>
+            <input
+              type="text"
+              name="player2Name"
+              id="player2Name"
+              placeholder="Player 2" />
+          </div>
+          <button class="startBtn" id="multiPlayerLocalStart" type="submit">
+            Start Game
+          </button>
+        </form>
+        <form class="startForm" id="multiPlayerOnlineForm">
+          <div>
+            <label for="player1Name">Player Name: </label>
+            <input
+              type="text"
+              name="player1Name"
+              id="player1Name"
+              placeholder="Player 1" />
+          </div>
+          <button class="startBtn" id="multiPlayerOnlineStart" type="submit">
+            Find Opponent
+          </button>
+        </form>
+      </div>
+      <div class="game">
+        <div class="playerContainer" id="opponentContainer">
+          <h2 class="playerName"></h2>
+          <div class="board"></div>
+        </div>
+        <div class="playerContainer" id="playerContainer">
+          <div class="board"></div>
+          <h2 class="playerName"></h2>
+        </div>
+      </div>
+    </main>
   </body>
 </html>
