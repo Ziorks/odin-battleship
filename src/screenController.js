@@ -31,6 +31,12 @@ export default class ScreenController {
     gamemodeHeader.textContent = "Select a Gamemode";
     gamemodeDiv.appendChild(gamemodeHeader);
 
+    const botMatchBtn = document.createElement("button");
+    botMatchBtn.className = "gamemodeBtn";
+    botMatchBtn.id = "botMatchBtn";
+    botMatchBtn.innerText = "Bot vs Bot";
+    gamemodeDiv.appendChild(botMatchBtn);
+
     const singlePlayerBtn = document.createElement("button");
     singlePlayerBtn.className = "gamemodeBtn";
     singlePlayerBtn.id = "singlePlayerBtn";
@@ -55,6 +61,9 @@ export default class ScreenController {
     pageMain.appendChild(gamemodeDiv);
     // <div class="gamemode">
     //     <h2>Select a Gamemode</h2>
+    //     <button class="gamemodeBtn" id="botMatchBtn">
+    //       Bot vs Bot
+    //     </button>
     //     <button class="gamemodeBtn" id="singlePlayerBtn">
     //       Player vs Bot
     //     </button>
@@ -65,6 +74,76 @@ export default class ScreenController {
     //       Player vs Player (online)
     //     </button>
     //   </div>
+  }
+
+  #showBotMatchForm() {
+    const pageMain = document.querySelector("main");
+
+    const botMatchForm = document.createElement("form");
+    botMatchForm.className = "startForm";
+    botMatchForm.id = "botMatchForm";
+
+    const bot1NameDiv = document.createElement("div");
+
+    const bot1NameLabel = document.createElement("label");
+    bot1NameLabel.htmlFor = "bot1Name";
+    bot1NameLabel.innerText = "Bot 1 Name: ";
+    bot1NameDiv.appendChild(bot1NameLabel);
+
+    const bot1NameInput = document.createElement("input");
+    bot1NameInput.type = "text";
+    bot1NameInput.name = "bot1Name";
+    bot1NameInput.id = "bot1Name";
+    bot1NameInput.placeholder = "Computer 1";
+    bot1NameDiv.appendChild(bot1NameInput);
+
+    const bot2NameDiv = document.createElement("div");
+
+    const bot2NameLabel = document.createElement("label");
+    bot2NameLabel.htmlFor = "bot2Name";
+    bot2NameLabel.innerText = "Bot 2 Name: ";
+    bot2NameDiv.appendChild(bot2NameLabel);
+
+    const bot2NameInput = document.createElement("input");
+    bot2NameInput.type = "text";
+    bot2NameInput.name = "bot2Name";
+    bot2NameInput.id = "bot2Name";
+    bot2NameInput.placeholder = "Computer 2";
+    bot2NameDiv.appendChild(bot2NameInput);
+
+    const startGameBtn = document.createElement("button");
+    startGameBtn.className = "startBtn";
+    startGameBtn.id = "botMatchStart";
+    startGameBtn.type = "submit";
+    startGameBtn.innerText = "Start Game";
+
+    botMatchForm.appendChild(bot1NameDiv);
+    botMatchForm.appendChild(bot2NameDiv);
+    botMatchForm.appendChild(startGameBtn);
+
+    pageMain.innerHTML = "";
+    pageMain.appendChild(botMatchForm);
+    // <form class="startForm" id="botMatchForm">
+    //   <div>
+    //     <label for="bot1Name">Bot 1 Name: </label>
+    //     <input
+    //       type="text"
+    //       name="bot1Name"
+    //       id="bot1Name"
+    //       placeholder="Computer 1" />
+    //   </div>
+    //   <div>
+    //     <label for="bot2Name">Bot 2 Name: </label>
+    //     <input
+    //       type="text"
+    //       name="bot2Name"
+    //       id="bot2Name"
+    //       placeholder="Computer 2" />
+    //   </div>
+    //   <button class="startBtn" id="botMatchStart" type="submit">
+    //     Start Game
+    //   </button>
+    // </form>
   }
 
   #showSinglePlayerForm() {
@@ -337,6 +416,9 @@ export default class ScreenController {
 
   #handleGamemodeSelect(e) {
     switch (e.target.id) {
+      case "botMatchBtn":
+        this.#showBotMatchForm();
+        break;
       case "singlePlayerBtn":
         this.#showSinglePlayerForm();
         break;
@@ -359,8 +441,8 @@ export default class ScreenController {
 
     switch (e.target.id) {
       case "botMatchStart":
-        player1Name = "Computer 1";
-        player2Name = "Computer 2";
+        player1Name = document.getElementById("bot1Name").value || "Computer 1";
+        player2Name = document.getElementById("bot2Name").value || "Computer 2";
         nBots = 2;
         break;
       case "singlePlayerStart":
