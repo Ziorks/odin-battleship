@@ -1,25 +1,32 @@
-import Player from "./player";
+import { Player, Bot } from "./player";
 
 export default class Game {
   #player1;
   #player2;
   #attackingPlayer;
   #isGameOver;
+  #gametype;
 
-  constructor(player1Name, player2Name, nBots = 0) {
-    this.#init(player1Name, player2Name, nBots);
+  constructor(player1Name, player2Name, gametype) {
+    this.#gametype = gametype;
+    this.#init(player1Name, player2Name);
   }
 
-  #init(player1Name, player2Name, nBots) {
-    if (nBots === 0) {
-      this.#player1 = new Player(player1Name);
-      this.#player2 = new Player(player2Name);
-    } else if (nBots === 1) {
-      this.#player1 = new Player(player1Name);
-      this.#player2 = new Player(player2Name, true);
-    } else {
-      this.#player1 = new Player(player1Name, true);
-      this.#player2 = new Player(player2Name, true);
+  #init(player1Name, player2Name) {
+    switch (this.#gametype) {
+      case "pvp":
+      case "online":
+        this.#player1 = new Player(player1Name);
+        this.#player2 = new Player(player2Name);
+        break;
+      case "pvb":
+        this.#player1 = new Player(player1Name);
+        this.#player2 = new Bot(player2Name);
+        break;
+      case "bots":
+        this.#player1 = new Bot(player1Name);
+        this.#player2 = new Bot(player2Name);
+        break;
     }
     this.#attackingPlayer = this.#player1;
     this.#isGameOver = false;
@@ -36,6 +43,10 @@ export default class Game {
       this.#player1.placeShip(ship.length, ship.location);
       this.#player2.placeShip(ship.length, ship.location);
     });
+  }
+
+  get gametype() {
+    return this.#gametype;
   }
 
   get player1() {
@@ -84,13 +95,9 @@ export default class Game {
     while (!this.#isGameOver) {
       let input;
 
-      if (this.#attackingPlayer.isComputer) {
-        input = [
-          Math.floor(Math.random() * 10),
-          Math.floor(Math.random() * 10),
-        ];
-        //implement a getAttack() for bots and replace this trash
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (this.#attackingPlayer instanceof Bot) {
+        input = this.#attackingPlayer.getAttack();
+        await new Promise((resolve) => setTimeout(resolve, 10));
       } else if (this.#attackingPlayer == this.#player1) {
         input = await player1Input();
       } else {
@@ -107,11 +114,6 @@ export default class Game {
   }
 
   reset() {
-    const nBots = this.#player1.isComputer
-      ? 2
-      : this.#player2.isComputer
-      ? 1
-      : 0;
-    this.#init(this.#player1.name, this.#player2.name, nBots);
+    this.#init(this.#player1.name, this.#player2.name);
   }
 }

@@ -410,8 +410,7 @@ export default class ScreenController {
     playerContainer.querySelector(".playerName").textContent =
       this.#game.player1.name;
 
-    if (this.#game.player1.isComputer && this.#game.player2.isComputer) {
-      //bot vs bot
+    if (this.#game.gametype === "bots") {
       this.#drawBoard(
         this.#game.player2.board,
         opponentContainer,
@@ -419,8 +418,7 @@ export default class ScreenController {
         false
       );
       this.#drawBoard(this.#game.player1.board, playerContainer, false, false);
-    } else if (this.#game.player1.isComputer || this.#game.player2.isComputer) {
-      //player vs bot
+    } else if (this.#game.gametype === "pvb") {
       const isPlayable = this.#game.attackingPlayer == this.#game.player1;
       this.#drawBoard(
         this.#game.player2.board,
@@ -496,36 +494,38 @@ export default class ScreenController {
       document.getElementById("player1Name")?.value || "Player 1";
     let player2Name =
       document.getElementById("player2Name")?.value || "Player 2";
-    let nBots = 0;
+    let gametype = "";
 
     switch (e.target.id) {
       case "botMatchStart":
         player1Name = document.getElementById("bot1Name").value || "Computer 1";
         player2Name = document.getElementById("bot2Name").value || "Computer 2";
-        nBots = 2;
+        gametype = "bots";
         break;
       case "singlePlayerStart":
         player2Name = "Computer";
-        nBots = 1;
+        gametype = "pvb";
         break;
       case "multiPlayerLocalStart":
+        gametype = "pvp";
         break;
       case "multiPlayerOnlineStart":
+        gametype = "online";
         //do later maybe?????
         break;
     }
 
-    this.#game = new Game(player1Name, player2Name, nBots);
-    this.#showGame();
-    this.#game
-      .start(this.#updateGameDisplay.bind(this), this.#player1Input)
-      .then((winner) => this.#showEndScreen(winner));
+    this.#game = new Game(player1Name, player2Name, gametype);
+    this.#startGame();
   }
 
   #handleRematch() {
-    const gameOverDiv = document.querySelector(".gameOverMenu");
-    gameOverDiv.innerHTML = "";
     this.#game.reset();
+    this.#startGame();
+  }
+
+  #startGame() {
+    this.#showGame();
     this.#game
       .start(this.#updateGameDisplay.bind(this), this.#player1Input)
       .then((winner) => this.#showEndScreen(winner));

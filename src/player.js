@@ -1,13 +1,11 @@
 import Gameboard from "./gameboard";
 
-export default class Player {
+export class Player {
   #board = new Gameboard();
   #name;
-  #isComputer;
 
-  constructor(name, isComputer = false) {
+  constructor(name) {
     this.#name = name;
-    this.#isComputer = isComputer;
   }
 
   get board() {
@@ -16,10 +14,6 @@ export default class Player {
 
   get name() {
     return this.#name;
-  }
-
-  get isComputer() {
-    return this.#isComputer;
   }
 
   placeShip(length, location) {
@@ -32,5 +26,29 @@ export default class Player {
 
   allShipsSunk() {
     return this.#board.allShipsSunk();
+  }
+}
+
+export class Bot extends Player {
+  #availableAttacks;
+
+  constructor(name) {
+    super(name);
+    this.#initAvailableAttacks();
+  }
+
+  #initAvailableAttacks() {
+    const allLocations = [];
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        allLocations.push([i, j]);
+      }
+    }
+    this.#availableAttacks = allLocations;
+  }
+
+  getAttack() {
+    const index = Math.floor(Math.random() * this.#availableAttacks.length);
+    return this.#availableAttacks.splice(index, 1)[0];
   }
 }
