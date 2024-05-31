@@ -527,11 +527,15 @@ export default class ScreenController {
   #startGame() {
     this.#showGame();
     this.#game
-      .start(this.#updateGameDisplay.bind(this), this.#player1Input)
+      .start(
+        this.#updateGameDisplay.bind(this),
+        this.#playerInput,
+        this.#playerInput
+      )
       .then((winner) => this.#showEndScreen(winner));
   }
 
-  #player1Input() {
+  #playerInput() {
     return new Promise((resolve) => {
       const cb = (e) => {
         if (e.target.className === "boardBtn") {

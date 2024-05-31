@@ -89,7 +89,7 @@ export default class Game {
     return message;
   }
 
-  async start(cb, player1Input, player2Input) {
+  async start(cb, playerInput) {
     let roundResult = null;
 
     while (!this.#isGameOver) {
@@ -98,10 +98,8 @@ export default class Game {
       if (this.#attackingPlayer instanceof Bot) {
         input = this.#attackingPlayer.getAttack();
         await new Promise((resolve) => setTimeout(resolve, 10));
-      } else if (this.#attackingPlayer == this.#player1) {
-        input = await player1Input();
       } else {
-        input = await player2Input();
+        input = await playerInput();
       }
 
       roundResult = this.#playRound(input);
