@@ -4,6 +4,7 @@ export default class Game {
   #player1;
   #player2;
   #attackingPlayer;
+  #isGameOver = false;
 
   constructor(player1Name, player2Name, nBots = 0) {
     if (nBots === 0) {
@@ -56,18 +57,45 @@ export default class Game {
 
   playRound(location) {
     const attackResult = this.receivingPlayer.receiveAttack(location);
-    if (attackResult !== null) {
-      if (this.receivingPlayer.allShipsSunk()) {
-        return `Game Over.  ${this.#attackingPlayer.name} Wins!`;
+    if (attackResult === null) {
+      return null;
+    }
+
+    const message = `${this.#attackingPlayer.name} attacked [${location[0]},  ${
+      location[1]
+    }] and it was a ${attackResult}${attackResult === "hit" ? "!" : "."}`;
+
+    if (this.receivingPlayer.allShipsSunk()) {
+      this.#isGameOver = true;
+    }
+
+    return message;
+  }
+
+  async start(cb, player1Input, player2Input) {
+    let roundResult = null;
+
+    while (!this.#isGameOver) {
+      let input;
+
+      if (this.#attackingPlayer.isComputer) {
+        input = [
+          Math.floor(Math.random() * 10),
+          Math.floor(Math.random() * 10),
+        ];
+        //implement a getAttack() for bots and replace this trash
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } else if (this.#attackingPlayer == this.#player1) {
+        input = await player1Input();
+      } else {
+        input = await player2Input();
       }
 
-      const message = `${this.#attackingPlayer.name} attacked [${
-        location[0]
-      },  ${location[1]}] and it was a ${attackResult}${
-        attackResult === "hit" ? "!" : "."
-      }`;
+      roundResult = this.playRound(input);
       this.#toggleAttackingPlayer();
-      return message;
+      cb(roundResult);
     }
+
+    return `Game Over.  ${this.receivingPlayer.name} Wins!`;
   }
 }

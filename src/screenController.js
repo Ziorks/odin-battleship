@@ -370,6 +370,13 @@ export default class ScreenController {
     // </div>
   }
 
+  #showEndScreen(winner) {
+    //todo: create end screen
+    //display winner
+    //rematch button
+    //home button
+  }
+
   #updateGameDisplay(message = "") {
     const opponentContainer = document.getElementById("opponentContainer");
     const playerContainer = document.getElementById("playerContainer");
@@ -384,7 +391,7 @@ export default class ScreenController {
     playerContainer.querySelector(".playerName").textContent =
       this.#game.player1.name;
 
-    const isPlayable = this.#game.receivingPlayer == this.#game.player2;
+    const isPlayable = this.#game.attackingPlayer == this.#game.player1;
 
     this.#drawBoard(
       this.#game.player2.board,
@@ -480,6 +487,24 @@ export default class ScreenController {
 
     this.#game = new Game(player1Name, player2Name, nBots);
     this.#showGame();
+    this.#game
+      .start(this.#updateGameDisplay.bind(this), this.#player1Input)
+      .then((winner) => this.#showEndScreen(winner));
+  }
+
+  #player1Input() {
+    return new Promise((resolve) => {
+      const cb = (e) => {
+        if (e.target.className === "boardBtn") {
+          const row = Number(e.target.dataset.row);
+          const column = Number(e.target.dataset.column);
+          const location = [row, column];
+          resolve(location);
+          window.removeEventListener("click", cb);
+        }
+      };
+      window.addEventListener("click", cb);
+    });
   }
 
   #addEventListeners() {
@@ -490,14 +515,6 @@ export default class ScreenController {
 
       if (e.target.className === "startBtn") {
         this.#handleStartFormSubmit(e);
-      }
-
-      if (e.target.className === "boardBtn") {
-        const row = Number(e.target.dataset.row);
-        const column = Number(e.target.dataset.column);
-        const location = [row, column];
-        const gameMessage = this.#game.playRound(location);
-        this.#updateGameDisplay(gameMessage);
       }
     });
   }
