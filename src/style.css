@@ -60,6 +60,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-size: calc(var(--gridSize) * 0.8);
 }
 
 .board {
@@ -80,6 +81,12 @@ main {
 
 #opponentContainer .boardSpace:not(.hit) {
   cursor: pointer;
+}
+
+#opponentContainer .boardSpace:not(.hit):hover:after {
+  display: block;
+  text-align: center;
+  content: "X";
 }
 
 .boardSpace.ship {
