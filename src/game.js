@@ -1,11 +1,21 @@
+import Player from "./player";
+
 export default class Game {
   #player1;
   #player2;
   #attackingPlayer;
 
-  constructor(player1, player2) {
-    this.#player1 = player1;
-    this.#player2 = player2;
+  constructor(player1Name, player2Name, nBots = 0) {
+    if (nBots === 0) {
+      this.#player1 = new Player(player1Name);
+      this.#player2 = new Player(player2Name);
+    } else if (nBots === 1) {
+      this.#player1 = new Player(player1Name);
+      this.#player2 = new Player(player2Name, true);
+    } else {
+      this.#player1 = new Player(player1Name, true);
+      this.#player2 = new Player(player2Name, true);
+    }
     this.#attackingPlayer = this.#player1;
 
     const testShips = [

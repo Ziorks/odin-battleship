@@ -1,4 +1,3 @@
-import Player from "./player";
 import Game from "./game";
 
 export default class ScreenController {
@@ -344,28 +343,30 @@ export default class ScreenController {
 
   #handleStartFormSubmit(e) {
     e.preventDefault();
-    const player1Name =
-      document.getElementById("player1Name").value || "Player 1";
-    const player1 = new Player(player1Name);
-    let player2Name;
-    let player2;
+    let player1Name =
+      document.getElementById("player1Name")?.value || "Player 1";
+    let player2Name =
+      document.getElementById("player2Name")?.value || "Player 2";
+    let nBots = 0;
 
     switch (e.target.id) {
+      case "botMatchStart":
+        player1Name = "Computer 1";
+        player2Name = "Computer 2";
+        nBots = 2;
+        break;
       case "singlePlayerStart":
         player2Name = "Computer";
-        player2 = new Player(player2Name, true);
+        nBots = 1;
         break;
       case "multiPlayerLocalStart":
-        player2Name =
-          document.getElementById("player2Name").value || "Player 2";
-        player2 = new Player(player2Name);
         break;
       case "multiPlayerOnlineStart":
         //do later maybe?????
         break;
     }
 
-    this.#game = new Game(player1, player2);
+    this.#game = new Game(player1Name, player2Name, nBots);
     this.#showGame();
   }
 
