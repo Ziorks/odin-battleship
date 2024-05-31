@@ -330,6 +330,14 @@ export default class ScreenController {
 
     gameDiv.appendChild(opponentContainer);
 
+    const lastAttackP = document.createElement("p");
+    lastAttackP.className = "lastAttack";
+    gameDiv.appendChild(lastAttackP);
+
+    const currentTurnP = document.createElement("p");
+    currentTurnP.className = "currentTurn";
+    gameDiv.appendChild(currentTurnP);
+
     const playerContainer = document.createElement("div");
     playerContainer.className = "playerContainer";
     playerContainer.id = "playerContainer";
@@ -347,12 +355,14 @@ export default class ScreenController {
     pageMain.innerHTML = "";
     pageMain.appendChild(gameDiv);
 
-    this.#updateGameDisplay();
+    this.#updateGameDisplay("Welcome Gamers!");
     // <div class="game">
     //   <div class="playerContainer" id="opponentContainer">
     //     <h2 class="playerName"></h2>
     //     <div class="board"></div>
     //   </div>
+    //   <p class="lastAttack"></p>
+    //   <p class="currentTurn"></p>
     //   <div class="playerContainer" id="playerContainer">
     //     <div class="board"></div>
     //     <h2 class="playerName"></h2>
@@ -360,9 +370,14 @@ export default class ScreenController {
     // </div>
   }
 
-  #updateGameDisplay() {
+  #updateGameDisplay(message = "") {
     const opponentContainer = document.getElementById("opponentContainer");
     const playerContainer = document.getElementById("playerContainer");
+    const lastAttackP = document.querySelector(".lastAttack");
+    const currentTurnP = document.querySelector(".currentTurn");
+
+    lastAttackP.innerText = message;
+    currentTurnP.innerText = `It's ${this.#game.attackingPlayer.name}'s turn.`;
 
     opponentContainer.querySelector(".playerName").textContent =
       this.#game.player2.name;
@@ -481,8 +496,8 @@ export default class ScreenController {
         const row = Number(e.target.dataset.row);
         const column = Number(e.target.dataset.column);
         const location = [row, column];
-        this.#game.playRound(location);
-        this.#updateGameDisplay();
+        const gameMessage = this.#game.playRound(location);
+        this.#updateGameDisplay(gameMessage);
       }
     });
   }

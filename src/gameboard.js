@@ -65,9 +65,9 @@ export default class Gameboard {
     boardSpace.isHit = true;
     if (boardSpace.ship) {
       boardSpace.ship.hit();
-      return "Hit";
+      return "hit";
     }
-    return "Miss";
+    return "miss";
   }
 
   allShipsSunk() {

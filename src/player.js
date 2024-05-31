@@ -23,11 +23,11 @@ export default class Player {
   }
 
   placeShip(length, location) {
-    this.#board.placeShip(length, location);
+    return this.#board.placeShip(length, location);
   }
 
   receiveAttack(location) {
-    this.#board.receiveAttack(location);
+    return this.#board.receiveAttack(location);
   }
 
   allShipsSunk() {

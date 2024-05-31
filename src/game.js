@@ -61,9 +61,11 @@ export default class Game {
         return `Game Over.  ${this.#attackingPlayer.name} Wins!`;
       }
 
-      const message = `${
-        this.#attackingPlayer.name
-      } attacked ${location} and it was a ${attackResult}.`;
+      const message = `${this.#attackingPlayer.name} attacked [${
+        location[0]
+      },  ${location[1]}] and it was a ${attackResult}${
+        attackResult === "hit" ? "!" : "."
+      }`;
       this.#toggleAttackingPlayer();
       return message;
     }
