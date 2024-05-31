@@ -79,11 +79,12 @@ main {
   background-color: white;
 }
 
-#opponentContainer .boardSpace:not(.hit) {
+.boardBtn {
   cursor: pointer;
+  appearance: none;
 }
 
-#opponentContainer .boardSpace:not(.hit):hover:after {
+.boardBtn:hover:after {
   display: block;
   text-align: center;
   content: "X";

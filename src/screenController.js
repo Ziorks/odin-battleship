@@ -303,26 +303,34 @@ export default class ScreenController {
         const boardColumn = column - 1;
         const boardSpaceDiv = document.createElement("div");
         if (column === 0 && row === 10) {
-          boardSpaceDiv.className = "boardCorner";
+          boardDiv.appendChild(boardSpaceDiv);
         } else if (column === 0) {
           boardSpaceDiv.className = "boardLabel";
           boardSpaceDiv.textContent = boardRow;
+          boardDiv.appendChild(boardSpaceDiv);
         } else if (row === 10) {
           boardSpaceDiv.className = "boardLabel";
           boardSpaceDiv.textContent = boardColumn;
+          boardDiv.appendChild(boardSpaceDiv);
         } else {
           const space = board[boardRow * 10 + boardColumn];
-          boardSpaceDiv.dataset.row = boardRow;
-          boardSpaceDiv.dataset.column = boardColumn;
-          boardSpaceDiv.className = "boardSpace";
-          if ((space.ship && !isOpponent) || (space.ship && space.isHit)) {
-            boardSpaceDiv.classList.add("ship");
-          }
-          if (space.isHit) {
-            boardSpaceDiv.classList.add("hit");
+          if (isOpponent && !space.isHit) {
+            const boardSpaceBtn = document.createElement("button");
+            boardSpaceBtn.dataset.row = boardRow;
+            boardSpaceBtn.dataset.column = boardColumn;
+            boardSpaceBtn.className = "boardBtn";
+            boardDiv.appendChild(boardSpaceBtn);
+          } else {
+            boardSpaceDiv.className = "boardSpace";
+            if (space.ship) {
+              boardSpaceDiv.classList.add("ship");
+            }
+            if (space.isHit) {
+              boardSpaceDiv.classList.add("hit");
+            }
+            boardDiv.appendChild(boardSpaceDiv);
           }
         }
-        boardDiv.appendChild(boardSpaceDiv);
       }
     }
   }
@@ -380,7 +388,7 @@ export default class ScreenController {
         this.#handleStartFormSubmit(e);
       }
 
-      if (e.target.className === "boardSpace") {
+      if (e.target.className === "boardBtn") {
         const row = Number(e.target.dataset.row);
         const column = Number(e.target.dataset.column);
         const location = [row, column];
