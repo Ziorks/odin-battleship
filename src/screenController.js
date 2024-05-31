@@ -369,11 +369,18 @@ export default class ScreenController {
     playerContainer.querySelector(".playerName").textContent =
       this.#game.player1.name;
 
-    this.#drawBoard(this.#game.player2.board, opponentContainer, true);
-    this.#drawBoard(this.#game.player1.board, playerContainer, false);
+    const isPlayable = this.#game.receivingPlayer == this.#game.player2;
+
+    this.#drawBoard(
+      this.#game.player2.board,
+      opponentContainer,
+      true,
+      isPlayable
+    );
+    this.#drawBoard(this.#game.player1.board, playerContainer, false, false);
   }
 
-  #drawBoard(board, container, isOpponent) {
+  #drawBoard(board, container, hideShips, isPlayable) {
     const boardDiv = container.querySelector(".board");
     boardDiv.innerHTML = "";
     for (let row = 0; row < 11; row++) {
@@ -393,7 +400,7 @@ export default class ScreenController {
           boardDiv.appendChild(boardSpaceDiv);
         } else {
           const space = board[boardRow * 10 + boardColumn];
-          if (isOpponent && !space.isHit) {
+          if (hideShips && isPlayable && !space.isHit) {
             const boardSpaceBtn = document.createElement("button");
             boardSpaceBtn.dataset.row = boardRow;
             boardSpaceBtn.dataset.column = boardColumn;
@@ -401,7 +408,7 @@ export default class ScreenController {
             boardDiv.appendChild(boardSpaceBtn);
           } else {
             boardSpaceDiv.className = "boardSpace";
-            if (space.ship) {
+            if ((space.ship && !hideShips) || (space.ship && space.isHit)) {
               boardSpaceDiv.classList.add("ship");
             }
             if (space.isHit) {
