@@ -338,6 +338,11 @@ export default class ScreenController {
     currentTurnP.className = "currentTurn";
     gameDiv.appendChild(currentTurnP);
 
+    const gameOverDiv = document.createElement("div");
+    gameOverDiv.className = "gameOverMenu";
+
+    gameDiv.appendChild(gameOverDiv);
+
     const playerContainer = document.createElement("div");
     playerContainer.className = "playerContainer";
     playerContainer.id = "playerContainer";
@@ -363,6 +368,10 @@ export default class ScreenController {
     //   </div>
     //   <p class="lastAttack"></p>
     //   <p class="currentTurn"></p>
+    //   <div class="gameOverMenu">
+    //     <button class="rematchBtn">Rematch</button> (added when game over)
+    //     <button class="newGameBtn">New Game</button> (added when game over)
+    //   </div>
     //   <div class="playerContainer" id="playerContainer">
     //     <div class="board"></div>
     //     <h2 class="playerName"></h2>
@@ -371,10 +380,20 @@ export default class ScreenController {
   }
 
   #showEndScreen(winner) {
-    //todo: create end screen
-    //display winner
-    //rematch button
-    //home button
+    const currentTurnP = document.querySelector(".currentTurn");
+    currentTurnP.innerText = winner;
+
+    const gameOverDiv = document.querySelector(".gameOverMenu");
+
+    const rematchBtn = document.createElement("button");
+    rematchBtn.className = "rematchBtn";
+    rematchBtn.innerText = "Rematch";
+    gameOverDiv.appendChild(rematchBtn);
+
+    const newGameBtn = document.createElement("button");
+    newGameBtn.className = "newGameBtn";
+    newGameBtn.innerText = "New Game";
+    gameOverDiv.appendChild(newGameBtn);
   }
 
   #updateGameDisplay(message = "") {
@@ -391,15 +410,26 @@ export default class ScreenController {
     playerContainer.querySelector(".playerName").textContent =
       this.#game.player1.name;
 
-    const isPlayable = this.#game.attackingPlayer == this.#game.player1;
-
-    this.#drawBoard(
-      this.#game.player2.board,
-      opponentContainer,
-      true,
-      isPlayable
-    );
-    this.#drawBoard(this.#game.player1.board, playerContainer, false, false);
+    if (this.#game.player1.isComputer && this.#game.player2.isComputer) {
+      //bot vs bot
+      this.#drawBoard(
+        this.#game.player2.board,
+        opponentContainer,
+        false,
+        false
+      );
+      this.#drawBoard(this.#game.player1.board, playerContainer, false, false);
+    } else if (this.#game.player1.isComputer || this.#game.player2.isComputer) {
+      //player vs bot
+      const isPlayable = this.#game.attackingPlayer == this.#game.player1;
+      this.#drawBoard(
+        this.#game.player2.board,
+        opponentContainer,
+        true,
+        isPlayable
+      );
+      this.#drawBoard(this.#game.player1.board, playerContainer, false, false);
+    }
   }
 
   #drawBoard(board, container, hideShips, isPlayable) {
@@ -492,6 +522,15 @@ export default class ScreenController {
       .then((winner) => this.#showEndScreen(winner));
   }
 
+  #handleRematch() {
+    const gameOverDiv = document.querySelector(".gameOverMenu");
+    gameOverDiv.innerHTML = "";
+    this.#game.reset();
+    this.#game
+      .start(this.#updateGameDisplay.bind(this), this.#player1Input)
+      .then((winner) => this.#showEndScreen(winner));
+  }
+
   #player1Input() {
     return new Promise((resolve) => {
       const cb = (e) => {
@@ -515,6 +554,14 @@ export default class ScreenController {
 
       if (e.target.className === "startBtn") {
         this.#handleStartFormSubmit(e);
+      }
+
+      if (e.target.className === "rematchBtn") {
+        this.#handleRematch();
+      }
+
+      if (e.target.className === "newGameBtn") {
+        this.#showGamemodeSelect();
       }
     });
   }

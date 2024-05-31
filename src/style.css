@@ -65,6 +65,17 @@ main {
   text-align: center;
 }
 
+.gameOverMenu {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.rematchBtn,
+.newGameBtn {
+  font-size: 1em;
+  padding: 5px;
+}
+
 .playerContainer {
   display: flex;
   flex-direction: column;

@@ -4,9 +4,13 @@ export default class Game {
   #player1;
   #player2;
   #attackingPlayer;
-  #isGameOver = false;
+  #isGameOver;
 
   constructor(player1Name, player2Name, nBots = 0) {
+    this.#init(player1Name, player2Name, nBots);
+  }
+
+  #init(player1Name, player2Name, nBots) {
     if (nBots === 0) {
       this.#player1 = new Player(player1Name);
       this.#player2 = new Player(player2Name);
@@ -18,6 +22,7 @@ export default class Game {
       this.#player2 = new Player(player2Name, true);
     }
     this.#attackingPlayer = this.#player1;
+    this.#isGameOver = false;
 
     const testShips = [
       { length: 2, location: [0, 0] },
@@ -55,9 +60,9 @@ export default class Game {
     this.#attackingPlayer = this.receivingPlayer;
   }
 
-  playRound(location) {
+  #playRound(location) {
     const attackResult = this.receivingPlayer.receiveAttack(location);
-    if (attackResult === null) {
+    if (attackResult === null || this.#isGameOver) {
       return null;
     }
 
@@ -69,6 +74,7 @@ export default class Game {
       this.#isGameOver = true;
     }
 
+    this.#toggleAttackingPlayer();
     return message;
   }
 
@@ -91,11 +97,21 @@ export default class Game {
         input = await player2Input();
       }
 
-      roundResult = this.playRound(input);
-      this.#toggleAttackingPlayer();
-      cb(roundResult);
+      roundResult = this.#playRound(input);
+      if (roundResult !== null) {
+        cb(roundResult);
+      }
     }
 
     return `Game Over.  ${this.receivingPlayer.name} Wins!`;
+  }
+
+  reset() {
+    const nBots = this.#player1.isComputer
+      ? 2
+      : this.#player2.isComputer
+      ? 1
+      : 0;
+    this.#init(this.#player1.name, this.#player2.name, nBots);
   }
 }
