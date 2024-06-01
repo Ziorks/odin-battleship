@@ -45,9 +45,24 @@ describe("Gameboard unit tests", () => {
       expect(spacesWithShip).toHaveLength(0);
     });
 
-    test("Place overlapping ships", () => {
-      expect(gameboard.placeShip(new Ship("test ship", 5), [0, 0])).toBe(true);
+    test("Place ship on ship", () => {
+      expect(gameboard.placeShip(new Ship("test ship", 5), [0, 0], true)).toBe(
+        true
+      );
       expect(gameboard.placeShip(new Ship("test ship", 5), [0, 3], false)).toBe(
+        false
+      );
+      const spacesWithShip = gameboard.board.filter(
+        (boardSpace) => boardSpace.ship
+      );
+      expect(spacesWithShip).toHaveLength(5);
+    });
+
+    test("Place ship that runs into another ship", () => {
+      expect(gameboard.placeShip(new Ship("test ship", 5), [1, 0], true)).toBe(
+        true
+      );
+      expect(gameboard.placeShip(new Ship("test ship", 5), [0, 0], false)).toBe(
         false
       );
       const spacesWithShip = gameboard.board.filter(
