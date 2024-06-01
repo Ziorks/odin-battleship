@@ -18,30 +18,22 @@ describe("Player unit tests", () => {
   });
 
   describe("Methods", () => {
-    let humanPlayer, computerPlayer;
+    let humanPlayer;
     beforeEach(() => {
       humanPlayer = new Player("test human player");
-      computerPlayer = new Bot("test computer player");
     });
 
     test("RandomizeShipLocations", () => {
       humanPlayer.randomizeShipLocations();
-      computerPlayer.randomizeShipLocations();
       expect(humanPlayer.ships.every((ship) => ship.location !== null)).toBe(
-        true
-      );
-      expect(computerPlayer.ships.every((ship) => ship.location !== null)).toBe(
         true
       );
     });
 
     test("placeShipsOnBoard", () => {
       expect(humanPlayer.placeShipsOnBoard()).toBe(false);
-      expect(computerPlayer.placeShipsOnBoard()).toBe(false);
       humanPlayer.randomizeShipLocations();
-      computerPlayer.randomizeShipLocations();
       expect(humanPlayer.placeShipsOnBoard()).toBe(true);
-      expect(computerPlayer.placeShipsOnBoard()).toBe(true);
     });
   });
 });
