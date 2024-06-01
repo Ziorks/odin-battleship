@@ -55,6 +55,20 @@ describe("Gameboard unit tests", () => {
       );
       expect(spacesWithShip).toHaveLength(5);
     });
+
+    test("Place ship that goes off grid to right (don't allow column wrapping)", () => {
+      expect(gameboard.placeShip(new Ship("test ship", 5), [0, 8], true)).toBe(
+        false
+      );
+      expect(gameboard.board[8].ship).toBeNull();
+    });
+
+    test("Place ship that goes off top of grid", () => {
+      expect(gameboard.placeShip(new Ship("test ship", 5), [8, 0], false)).toBe(
+        false
+      );
+      expect(gameboard.board[80].ship).toBeNull();
+    });
   });
 
   describe("receiveAttack()", () => {
