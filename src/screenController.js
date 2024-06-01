@@ -204,7 +204,11 @@ export default class ScreenController {
     const shipPlacementDiv = document.createElement("div");
     shipPlacementDiv.className = "shipPlacement";
 
-    const shipPlacementHeader = document.createElement("h2");
+    const shipPlacementPlayerHeader = document.createElement("h2");
+    shipPlacementPlayerHeader.innerText = player.name;
+    shipPlacementDiv.appendChild(shipPlacementPlayerHeader);
+
+    const shipPlacementHeader = document.createElement("h3");
     shipPlacementHeader.innerText = "Place Your Ships";
     shipPlacementDiv.appendChild(shipPlacementHeader);
 
@@ -253,7 +257,8 @@ export default class ScreenController {
     this.#updateShipPlacementDisplay(player);
     //   <form class="startForm" id="shipPlacementForm">
     //     <div class="shipPlacement">
-    //       <h2>Place Your Ships</h2
+    //       <h2>[PlayerName]</h2>
+    //       <h3>Place Your Ships</h3>
     //       <div class="board">
     //       </div>
     //     </div>
