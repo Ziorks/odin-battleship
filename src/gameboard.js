@@ -1,5 +1,3 @@
-import Ship from "./ship";
-
 class BoardSpace {
   ship = null;
   isHit = false;
@@ -32,12 +30,13 @@ export default class Gameboard {
     return row * this.#size + column;
   }
 
-  placeShip(shipLength, [row, column], isHorizontal = true) {
-    const ship = new Ship(shipLength);
+  placeShip(ship, [row, column], isHorizontal = true) {
     const boardIndices = [];
-    for (let i = 0; i < shipLength; i++) {
+    for (let i = 0; i < ship.shipLength; i++) {
       if (isHorizontal) {
-        boardIndices.push(this.#getBoardIndex(row, column + i));
+        boardIndices.push(
+          column + i > 9 ? null : this.#getBoardIndex(row, column + i)
+        );
       } else {
         boardIndices.push(this.#getBoardIndex(row + i, column));
       }
@@ -46,13 +45,14 @@ export default class Gameboard {
         boardIndices[i] === null ||
         this.#board[boardIndices[i]].ship !== null
       ) {
-        return;
+        return false;
       }
     }
     boardIndices.forEach((index) => {
       this.#board[index].ship = ship;
     });
     this.#ships.push(ship);
+    return true;
   }
 
   receiveAttack([row, column]) {

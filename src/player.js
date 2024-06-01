@@ -1,8 +1,16 @@
 import Gameboard from "./gameboard";
+import Ship from "./ship";
 
 export class Player {
-  #board = new Gameboard();
   #name;
+  #board = new Gameboard();
+  #ships = [
+    { ship: new Ship("Carrier", 5), location: null, isHorizontal: true },
+    { ship: new Ship("Battleship", 4), location: null, isHorizontal: true },
+    { ship: new Ship("Destroyer", 3), location: null, isHorizontal: true },
+    { ship: new Ship("Submarine", 3), location: null, isHorizontal: true },
+    { ship: new Ship("Patrol Boat", 2), location: null, isHorizontal: true },
+  ];
 
   constructor(name) {
     this.#name = name;
@@ -16,8 +24,40 @@ export class Player {
     return this.#name;
   }
 
-  placeShip(length, location) {
-    return this.#board.placeShip(length, location);
+  get ships() {
+    return this.#ships;
+  }
+
+  #shipsReadyToPlace() {
+    return this.#ships.every(({ location }) => location !== null);
+  }
+
+  randomizeShipLocations() {
+    const testBoard = new Gameboard();
+    this.#ships.forEach(({ ship, location, isHorizontal }, index) => {
+      let placed = false;
+      while (!placed) {
+        location = [
+          Math.floor(Math.random() * 10),
+          Math.floor(Math.random() * 10),
+        ];
+        isHorizontal = Boolean(Math.floor(Math.random() + 0.5));
+        placed = testBoard.placeShip(ship, location, isHorizontal);
+      }
+      this.#ships[index].location = location;
+      this.#ships[index].isHorizontal = isHorizontal;
+    });
+  }
+
+  placeShipsOnBoard() {
+    if (!this.#shipsReadyToPlace()) {
+      return false;
+    }
+
+    this.#ships.forEach(({ ship, location, isHorizontal }) => {
+      this.#board.placeShip(ship, location, isHorizontal);
+    });
+    return true;
   }
 
   receiveAttack(location) {

@@ -5,7 +5,11 @@ describe("Ship unit tests", () => {
     let testShip;
 
     beforeEach(() => {
-      testShip = new Ship(2);
+      testShip = new Ship("Test Ship", 2);
+    });
+
+    test("get name", () => {
+      expect(testShip.name).toBe("Test Ship");
     });
 
     test("get length", () => {
@@ -38,19 +42,19 @@ describe("Ship unit tests", () => {
 
   describe("Error handling", () => {
     test("construct with non-number", () => {
-      expect(() => new Ship("four")).toThrow(
+      expect(() => new Ship("Test Ship", "four")).toThrow(
         "Ship constructor requires a length that is an integer greater than zero."
       );
-      expect(() => new Ship(1.4)).toThrow(
+      expect(() => new Ship("Test Ship", 1.4)).toThrow(
         "Ship constructor requires a length that is an integer greater than zero."
       );
     });
 
     test("construct with invalid number", () => {
-      expect(() => new Ship(-4)).toThrow(
+      expect(() => new Ship("Test Ship", -4)).toThrow(
         "Ship constructor requires a length that is an integer greater than zero."
       );
-      expect(() => new Ship(0)).toThrow(
+      expect(() => new Ship("Test Ship", 0)).toThrow(
         "Ship constructor requires a length that is an integer greater than zero."
       );
     });
