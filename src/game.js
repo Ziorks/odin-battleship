@@ -22,16 +22,10 @@ export default class Game {
       case "pvb":
         this.#player1 = new Player(player1Name);
         this.#player2 = new Bot(player2Name);
-        this.#player2.randomizeShipLocations();
-        this.#player2.placeShipsOnBoard();
         break;
       case "bots":
         this.#player1 = new Bot(player1Name);
         this.#player2 = new Bot(player2Name);
-        this.#player1.randomizeShipLocations();
-        this.#player1.placeShipsOnBoard();
-        this.#player2.randomizeShipLocations();
-        this.#player2.placeShipsOnBoard();
         break;
     }
     this.#attackingPlayer = this.#player1;

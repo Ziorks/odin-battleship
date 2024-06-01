@@ -74,6 +74,8 @@ export class Bot extends Player {
 
   constructor(name) {
     super(name);
+    this.randomizeShipLocations();
+    this.placeShipsOnBoard();
     this.#initAvailableAttacks();
   }
 
