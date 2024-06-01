@@ -218,6 +218,116 @@ export default class ScreenController {
 
     shipPlacementForm.appendChild(shipPlacementDiv);
 
+    //start single ship placement form
+    const singleShipPlacementForm = document.createElement("form");
+    singleShipPlacementForm.className = "singleShipPlacementForm";
+
+    const shipSelectorDiv = document.createElement("div");
+
+    const shipSelectorLabel = document.createElement("label");
+    shipSelectorLabel.htmlFor = "ships";
+    shipSelectorLabel.innerText = "Ship";
+    shipSelectorDiv.appendChild(shipSelectorLabel);
+
+    const shipSelectorBox = document.createElement("select");
+    shipSelectorBox.name = "ships";
+    shipSelectorBox.id = "ships";
+
+    player.ships.forEach(({ ship }) => {
+      const option = document.createElement("option");
+      option.value = ship.name;
+      option.innerText = ship.name;
+      shipSelectorBox.appendChild(option);
+    });
+
+    shipSelectorDiv.appendChild(shipSelectorBox);
+    singleShipPlacementForm.appendChild(shipSelectorDiv);
+
+    const rowDiv = document.createElement("div");
+
+    const rowLabel = document.createElement("label");
+    rowLabel.htmlFor = "row";
+    rowLabel.innerText = "Row";
+    rowDiv.appendChild(rowLabel);
+
+    const rowInput = document.createElement("input");
+    rowInput.type = "number";
+    rowInput.name = "row";
+    rowInput.id = "row";
+    rowInput.min = "0";
+    rowInput.max = "9";
+    rowInput.value = "0";
+    rowDiv.appendChild(rowInput);
+
+    singleShipPlacementForm.appendChild(rowDiv);
+
+    const columnDiv = document.createElement("div");
+
+    const columnLabel = document.createElement("label");
+    columnLabel.htmlFor = "column";
+    columnLabel.innerText = "Column";
+    columnDiv.appendChild(columnLabel);
+
+    const columnInput = document.createElement("input");
+    columnInput.type = "number";
+    columnInput.name = "column";
+    columnInput.id = "column";
+    columnInput.min = "0";
+    columnInput.max = "9";
+    columnInput.value = "0";
+    columnDiv.appendChild(columnInput);
+
+    singleShipPlacementForm.appendChild(columnDiv);
+
+    const orientationDiv = document.createElement("div");
+
+    const horizontalLabel = document.createElement("label");
+    horizontalLabel.htmlFor = "horizontal";
+    horizontalLabel.innerText = "Horizontal ";
+    orientationDiv.appendChild(horizontalLabel);
+
+    const horizontalInput = document.createElement("input");
+    horizontalInput.type = "radio";
+    horizontalInput.name = "orientation";
+    horizontalInput.id = "horizontal";
+    horizontalInput.value = "horizontal";
+    horizontalInput.checked = true;
+    orientationDiv.appendChild(horizontalInput);
+
+    const verticalLabel = document.createElement("label");
+    verticalLabel.htmlFor = "vertical";
+    verticalLabel.innerText = "Vertical ";
+    orientationDiv.appendChild(verticalLabel);
+
+    const verticalInput = document.createElement("input");
+    verticalInput.type = "radio";
+    verticalInput.name = "orientation";
+    verticalInput.id = "vertical";
+    verticalInput.value = "vertical";
+    orientationDiv.appendChild(verticalInput);
+
+    singleShipPlacementForm.appendChild(orientationDiv);
+
+    const singleShipPlacementBtn = document.createElement("button");
+    singleShipPlacementBtn.className = "shipPlacementBtn";
+    singleShipPlacementBtn.type = "submit";
+    singleShipPlacementBtn.innerText = "Place Ship";
+    singleShipPlacementBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const shipName = document.getElementById("ships").value;
+      const row = Number(document.getElementById("row").value);
+      const column = Number(document.getElementById("column").value);
+      const isHorizontal = document.getElementById("horizontal").checked;
+      if (player.setShipLocation(shipName, [row, column], isHorizontal)) {
+        this.#updateShipPlacementDisplay(player);
+      }
+    });
+
+    singleShipPlacementForm.appendChild(singleShipPlacementBtn);
+    shipPlacementForm.appendChild(singleShipPlacementForm);
+
+    //end single ship placement form
+
     const randomizeShipsBtn = document.createElement("button");
     randomizeShipsBtn.className = "shipPlacementBtn";
     randomizeShipsBtn.type = "button";
@@ -250,7 +360,6 @@ export default class ScreenController {
     });
     shipPlacementForm.appendChild(placeShipsBtn);
 
-    //after everything
     pageMain.innerHTML = "";
     pageMain.appendChild(shipPlacementForm);
 
@@ -262,6 +371,33 @@ export default class ScreenController {
     //       <div class="board">
     //       </div>
     //     </div>
+    //     <form class="singleShipPlacementForm">
+    //       <div>
+    //         <label for="ships">Ship</label>
+    //         <select name="ships" id="ships">
+    //           <option value="Carrier">Carrier</option>
+    //           <option value="Battleship">Battleship</option>
+    //           <option value="Destroyer">Destroyer</option>
+    //           <option value="Submarine">Submarine</option>
+    //           <option value="Patrol Boat">Patrol Boat</option>
+    //         </select>
+    //       </div>
+    //       <div>
+    //         <label for="row">Row</label>
+    //         <input type="number" name="row" id="row" min="0" max="9" />
+    //       </div>
+    //       <div>
+    //         <label for="column">Column</label>
+    //         <input type="number" name="column" id="column" min="0" max="9" />
+    //       </div>
+    //       <div>
+    //         <label for="horizontal">Horizontal </label>
+    //         <input type="radio" name="orientation" id="horizontal" value="horizontal" />
+    //         <label for="vertical">Vertical </label>
+    //         <input type="radio" name="orientation" id="vertical" value="vertical" />
+    //       </div>
+    //       <button class="shipPlacementBtn" type="submit">Place Ship</button>
+    //     </form>
     //     <button class="shipPlacementBtn" type="button">Randomize Ships</button>
     //     <button class="shipPlacementBtn" type="button">Clear Board</button>
     //     <button class="placeShipsBtn" type="submit">Confirm Ship Placement</button>
