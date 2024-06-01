@@ -18,7 +18,6 @@ export default class ScreenController {
     const pageMain = document.createElement("main");
     body.appendChild(pageMain);
 
-    this.#addEventListeners();
     this.#showGamemodeSelect();
   }
 
@@ -34,21 +33,25 @@ export default class ScreenController {
 
     const botMatchBtn = document.createElement("button");
     botMatchBtn.className = "gamemodeBtn";
-    botMatchBtn.id = "botMatchBtn";
     botMatchBtn.innerText = "Bot vs Bot";
+    botMatchBtn.addEventListener("click", () => this.#showBotMatchForm());
     gamemodeDiv.appendChild(botMatchBtn);
 
     const singlePlayerBtn = document.createElement("button");
     singlePlayerBtn.className = "gamemodeBtn";
-    singlePlayerBtn.id = "singlePlayerBtn";
     singlePlayerBtn.innerText = "Player vs Bot";
+    singlePlayerBtn.addEventListener("click", () =>
+      this.#showSinglePlayerForm()
+    );
     gamemodeDiv.appendChild(singlePlayerBtn);
 
     const multiPlayerLocalBtn = document.createElement("button");
     multiPlayerLocalBtn.className = "gamemodeBtn";
-    multiPlayerLocalBtn.id = "multiPlayerLocalBtn";
     multiPlayerLocalBtn.innerText = "Player vs Player (local)";
     multiPlayerLocalBtn.disabled = true; //disabled until functionality exists
+    multiPlayerLocalBtn.addEventListener("click", () =>
+      this.#showMultiPlayerLocalForm()
+    );
     gamemodeDiv.appendChild(multiPlayerLocalBtn);
 
     const multiPlayerOnlineBtn = document.createElement("button");
@@ -56,22 +59,25 @@ export default class ScreenController {
     multiPlayerOnlineBtn.id = "multiPlayerOnlineBtn";
     multiPlayerOnlineBtn.innerText = "Player vs Player (online)";
     multiPlayerOnlineBtn.disabled = true; //disabled until functionality exists
+    multiPlayerOnlineBtn.addEventListener("click", () =>
+      this.#showMultiPlayerOnlineForm()
+    );
     gamemodeDiv.appendChild(multiPlayerOnlineBtn);
 
     pageMain.innerHTML = "";
     pageMain.appendChild(gamemodeDiv);
     // <div class="gamemode">
     //     <h2>Select a Gamemode</h2>
-    //     <button class="gamemodeBtn" id="botMatchBtn">
+    //     <button class="gamemodeBtn">
     //       Bot vs Bot
     //     </button>
-    //     <button class="gamemodeBtn" id="singlePlayerBtn">
+    //     <button class="gamemodeBtn">
     //       Player vs Bot
     //     </button>
-    //     <button class="gamemodeBtn" id="multiPlayerLocalBtn" disabled>
+    //     <button class="gamemodeBtn" disabled>
     //       Player vs Player (local)
     //     </button>
-    //     <button class="gamemodeBtn" id="multiPlayerOnlineBtn" disabled>
+    //     <button class="gamemodeBtn" disabled>
     //       Player vs Player (online)
     //     </button>
     //   </div>
@@ -114,9 +120,15 @@ export default class ScreenController {
 
     const startGameBtn = document.createElement("button");
     startGameBtn.className = "startBtn";
-    startGameBtn.id = "botMatchStart";
     startGameBtn.type = "submit";
     startGameBtn.innerText = "Start Game";
+    startGameBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const player1Name = bot1NameInput.value || "Computer 1";
+      const player2Name = bot2NameInput.value || "Computer 2";
+      this.#game = new Game(player1Name, player2Name, "bots");
+      this.#startGame();
+    });
 
     botMatchForm.appendChild(bot1NameDiv);
     botMatchForm.appendChild(bot2NameDiv);
@@ -141,7 +153,7 @@ export default class ScreenController {
     //       id="bot2Name"
     //       placeholder="Computer 2" />
     //   </div>
-    //   <button class="startBtn" id="botMatchStart" type="submit">
+    //   <button class="startBtn" type="submit">
     //     Start Game
     //   </button>
     // </form>
@@ -170,9 +182,14 @@ export default class ScreenController {
 
     const startGameBtn = document.createElement("button");
     startGameBtn.className = "startBtn";
-    startGameBtn.id = "singlePlayerStart";
     startGameBtn.type = "submit";
     startGameBtn.innerText = "Start Game";
+    startGameBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const player1Name = player1NameInput.value || "Player 1";
+      this.#game = new Game(player1Name, "Computer", "pvb");
+      this.#startGame();
+    });
 
     singlePlayerForm.appendChild(player1NameDiv);
     singlePlayerForm.appendChild(startGameBtn);
@@ -188,10 +205,139 @@ export default class ScreenController {
     //         id="player1Name"
     //         placeholder="Player 1" />
     //     </div>
-    //     <button class="startBtn" id="singlePlayerStart" type="submit">
+    //     <button class="startBtn" type="submit">
     //       Start Game
     //     </button>
     //  </form>
+  }
+
+  #showMultiPlayerLocalForm() {
+    const pageMain = document.querySelector("main");
+
+    const multiPlayerLocalForm = document.createElement("form");
+    multiPlayerLocalForm.className = "startForm";
+    multiPlayerLocalForm.id = "multiPlayerLocalForm";
+
+    const player1NameDiv = document.createElement("div");
+
+    const player1NameLabel = document.createElement("label");
+    player1NameLabel.htmlFor = "player1Name";
+    player1NameLabel.innerText = "Player 1 Name: ";
+    player1NameDiv.appendChild(player1NameLabel);
+
+    const player1NameInput = document.createElement("input");
+    player1NameInput.type = "text";
+    player1NameInput.name = "player1Name";
+    player1NameInput.id = "player1Name";
+    player1NameInput.placeholder = "Player 1";
+    player1NameDiv.appendChild(player1NameInput);
+
+    const player2NameDiv = document.createElement("div");
+
+    const player2NameLabel = document.createElement("label");
+    player2NameLabel.htmlFor = "player2Name";
+    player2NameLabel.innerText = "Player 2 Name: ";
+    player2NameDiv.appendChild(player2NameLabel);
+
+    const player2NameInput = document.createElement("input");
+    player2NameInput.type = "text";
+    player2NameInput.name = "player2Name";
+    player2NameInput.id = "player2Name";
+    player2NameInput.placeholder = "Player 2";
+    player2NameDiv.appendChild(player2NameInput);
+
+    const startGameBtn = document.createElement("button");
+    startGameBtn.className = "startBtn";
+    startGameBtn.type = "submit";
+    startGameBtn.innerText = "Start Game";
+    startGameBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const player1Name = player1NameInput.value || "Player 1";
+      const player2Name = player2NameInput.value || "Player 2";
+      this.#game = new Game(player1Name, player2Name, "pvp");
+      this.#startGame();
+    });
+
+    multiPlayerLocalForm.appendChild(player1NameDiv);
+    multiPlayerLocalForm.appendChild(player2NameDiv);
+    multiPlayerLocalForm.appendChild(startGameBtn);
+
+    pageMain.innerHTML = "";
+    pageMain.appendChild(multiPlayerLocalForm);
+    // <form class="startForm" id="multiPlayerLocalForm">
+    //   <div>
+    //     <label for="player1Name">Player 1 Name: </label>
+    //     <input
+    //       type="text"
+    //       name="player1Name"
+    //       id="player1Name"
+    //       placeholder="Player 1" />
+    //   </div>
+    //   <div>
+    //     <label for="player2Name">Player 2 Name: </label>
+    //     <input
+    //       type="text"
+    //       name="player2Name"
+    //       id="player2Name"
+    //       placeholder="Player 2" />
+    //   </div>
+    //   <button class="startBtn" type="submit">
+    //     Start Game
+    //   </button>
+    // </form>
+  }
+
+  #showMultiPlayerOnlineForm() {
+    const pageMain = document.querySelector("main");
+
+    const multiPlayerOnlineForm = document.createElement("form");
+    multiPlayerOnlineForm.className = "startForm";
+    multiPlayerOnlineForm.id = "multiPlayerOnlineForm";
+
+    const player1NameDiv = document.createElement("div");
+
+    const player1NameLabel = document.createElement("label");
+    player1NameLabel.htmlFor = "player1Name";
+    player1NameLabel.innerText = "Player Name: ";
+    player1NameDiv.appendChild(player1NameLabel);
+
+    const player1NameInput = document.createElement("input");
+    player1NameInput.type = "text";
+    player1NameInput.name = "player1Name";
+    player1NameInput.id = "player1Name";
+    player1NameInput.placeholder = "Player 1";
+    player1NameDiv.appendChild(player1NameInput);
+
+    const startGameBtn = document.createElement("button");
+    startGameBtn.className = "startBtn";
+    startGameBtn.type = "submit";
+    startGameBtn.innerText = "Find Opponent";
+    startGameBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const player1Name = player1NameInput.value || "Player 1";
+      const player2Name = null; //get player2Name from online response
+      this.#game = new Game(player1Name, player2Name, "online");
+      this.#startGame();
+    });
+
+    multiPlayerOnlineForm.appendChild(player1NameDiv);
+    multiPlayerOnlineForm.appendChild(startGameBtn);
+
+    pageMain.innerHTML = "";
+    pageMain.appendChild(multiPlayerOnlineForm);
+    // <form class="startForm" id="multiPlayerOnlineForm">
+    //   <div>
+    //     <label for="player1Name">Player Name: </label>
+    //     <input
+    //       type="text"
+    //       name="player1Name"
+    //       id="player1Name"
+    //       placeholder="Player 1" />
+    //   </div>
+    //   <button class="startBtn" type="submit">
+    //     Find Opponent
+    //   </button>
+    // </form>
   }
 
   #showShipPlacementForm(player) {
@@ -419,123 +565,6 @@ export default class ScreenController {
     );
   }
 
-  #showMultiPlayerLocalForm() {
-    const pageMain = document.querySelector("main");
-
-    const multiPlayerLocalForm = document.createElement("form");
-    multiPlayerLocalForm.className = "startForm";
-    multiPlayerLocalForm.id = "multiPlayerLocalForm";
-
-    const player1NameDiv = document.createElement("div");
-
-    const player1NameLabel = document.createElement("label");
-    player1NameLabel.htmlFor = "player1Name";
-    player1NameLabel.innerText = "Player 1 Name: ";
-    player1NameDiv.appendChild(player1NameLabel);
-
-    const player1NameInput = document.createElement("input");
-    player1NameInput.type = "text";
-    player1NameInput.name = "player1Name";
-    player1NameInput.id = "player1Name";
-    player1NameInput.placeholder = "Player 1";
-    player1NameDiv.appendChild(player1NameInput);
-
-    const player2NameDiv = document.createElement("div");
-
-    const player2NameLabel = document.createElement("label");
-    player2NameLabel.htmlFor = "player2Name";
-    player2NameLabel.innerText = "Player 2 Name: ";
-    player2NameDiv.appendChild(player2NameLabel);
-
-    const player2NameInput = document.createElement("input");
-    player2NameInput.type = "text";
-    player2NameInput.name = "player2Name";
-    player2NameInput.id = "player2Name";
-    player2NameInput.placeholder = "Player 2";
-    player2NameDiv.appendChild(player2NameInput);
-
-    const startGameBtn = document.createElement("button");
-    startGameBtn.className = "startBtn";
-    startGameBtn.id = "multiPlayerLocalStart";
-    startGameBtn.type = "submit";
-    startGameBtn.innerText = "Start Game";
-
-    multiPlayerLocalForm.appendChild(player1NameDiv);
-    multiPlayerLocalForm.appendChild(player2NameDiv);
-    multiPlayerLocalForm.appendChild(startGameBtn);
-
-    pageMain.innerHTML = "";
-    pageMain.appendChild(multiPlayerLocalForm);
-    // <form class="startForm" id="multiPlayerLocalForm">
-    //   <div>
-    //     <label for="player1Name">Player 1 Name: </label>
-    //     <input
-    //       type="text"
-    //       name="player1Name"
-    //       id="player1Name"
-    //       placeholder="Player 1" />
-    //   </div>
-    //   <div>
-    //     <label for="player2Name">Player 2 Name: </label>
-    //     <input
-    //       type="text"
-    //       name="player2Name"
-    //       id="player2Name"
-    //       placeholder="Player 2" />
-    //   </div>
-    //   <button class="startBtn" id="multiPlayerLocalStart" type="submit">
-    //     Start Game
-    //   </button>
-    // </form>
-  }
-
-  #showMultiPlayerOnlineForm() {
-    const pageMain = document.querySelector("main");
-
-    const multiPlayerOnlineForm = document.createElement("form");
-    multiPlayerOnlineForm.className = "startForm";
-    multiPlayerOnlineForm.id = "multiPlayerOnlineForm";
-
-    const player1NameDiv = document.createElement("div");
-
-    const player1NameLabel = document.createElement("label");
-    player1NameLabel.htmlFor = "player1Name";
-    player1NameLabel.innerText = "Player Name: ";
-    player1NameDiv.appendChild(player1NameLabel);
-
-    const player1NameInput = document.createElement("input");
-    player1NameInput.type = "text";
-    player1NameInput.name = "player1Name";
-    player1NameInput.id = "player1Name";
-    player1NameInput.placeholder = "Player 1";
-    player1NameDiv.appendChild(player1NameInput);
-
-    const startGameBtn = document.createElement("button");
-    startGameBtn.className = "startBtn";
-    startGameBtn.id = "multiPlayerOnlineStart";
-    startGameBtn.type = "submit";
-    startGameBtn.innerText = "Find Opponent";
-
-    multiPlayerOnlineForm.appendChild(player1NameDiv);
-    multiPlayerOnlineForm.appendChild(startGameBtn);
-
-    pageMain.innerHTML = "";
-    pageMain.appendChild(multiPlayerOnlineForm);
-    // <form class="startForm" id="multiPlayerOnlineForm">
-    //   <div>
-    //     <label for="player1Name">Player Name: </label>
-    //     <input
-    //       type="text"
-    //       name="player1Name"
-    //       id="player1Name"
-    //       placeholder="Player 1" />
-    //   </div>
-    //   <button class="startBtn" id="multiPlayerOnlineStart" type="submit">
-    //     Find Opponent
-    //   </button>
-    // </form>
-  }
-
   #showGame() {
     const pageMain = document.querySelector("main");
 
@@ -614,11 +643,13 @@ export default class ScreenController {
     const rematchBtn = document.createElement("button");
     rematchBtn.className = "rematchBtn";
     rematchBtn.innerText = "Rematch";
+    rematchBtn.addEventListener("click", () => this.#handleRematch());
     gameOverDiv.appendChild(rematchBtn);
 
     const newGameBtn = document.createElement("button");
     newGameBtn.className = "newGameBtn";
     newGameBtn.innerText = "New Game";
+    newGameBtn.addEventListener("click", () => this.#showGamemodeSelect());
     gameOverDiv.appendChild(newGameBtn);
   }
 
@@ -697,54 +728,6 @@ export default class ScreenController {
     }
   }
 
-  #handleGamemodeSelect(e) {
-    switch (e.target.id) {
-      case "botMatchBtn":
-        this.#showBotMatchForm();
-        break;
-      case "singlePlayerBtn":
-        this.#showSinglePlayerForm();
-        break;
-      case "multiPlayerLocalBtn":
-        this.#showMultiPlayerLocalForm();
-        break;
-      case "multiPlayerOnlineBtn":
-        this.#showMultiPlayerOnlineForm();
-        break;
-    }
-  }
-
-  #handleStartFormSubmit(e) {
-    e.preventDefault();
-    let player1Name =
-      document.getElementById("player1Name")?.value || "Player 1";
-    let player2Name =
-      document.getElementById("player2Name")?.value || "Player 2";
-    let gametype = "";
-
-    switch (e.target.id) {
-      case "botMatchStart":
-        player1Name = document.getElementById("bot1Name").value || "Computer 1";
-        player2Name = document.getElementById("bot2Name").value || "Computer 2";
-        gametype = "bots";
-        break;
-      case "singlePlayerStart":
-        player2Name = "Computer";
-        gametype = "pvb";
-        break;
-      case "multiPlayerLocalStart":
-        gametype = "pvp";
-        break;
-      case "multiPlayerOnlineStart":
-        gametype = "online";
-        //do later maybe?????
-        break;
-    }
-
-    this.#game = new Game(player1Name, player2Name, gametype);
-    this.#startGame();
-  }
-
   #handleRematch() {
     this.#game.reset();
     this.#startGame();
@@ -780,26 +763,6 @@ export default class ScreenController {
         }
       };
       window.addEventListener("click", cb);
-    });
-  }
-
-  #addEventListeners() {
-    window.addEventListener("click", (e) => {
-      if (e.target.className === "gamemodeBtn") {
-        this.#handleGamemodeSelect(e);
-      }
-
-      if (e.target.className === "startBtn") {
-        this.#handleStartFormSubmit(e);
-      }
-
-      if (e.target.className === "rematchBtn") {
-        this.#handleRematch();
-      }
-
-      if (e.target.className === "newGameBtn") {
-        this.#showGamemodeSelect();
-      }
     });
   }
 }
