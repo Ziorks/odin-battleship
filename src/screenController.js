@@ -1,4 +1,5 @@
 import Game from "./game";
+import Gameboard from "./gameboard";
 
 export default class ScreenController {
   #game;
@@ -190,7 +191,91 @@ export default class ScreenController {
     //     <button class="startBtn" id="singlePlayerStart" type="submit">
     //       Start Game
     //     </button>
-    // </form>
+    //  </form>
+  }
+
+  #showShipPlacementForm(player) {
+    const pageMain = document.querySelector("main");
+
+    const shipPlacementForm = document.createElement("form");
+    shipPlacementForm.className = "startForm";
+    shipPlacementForm.id = "shipPlacementForm";
+
+    const shipPlacementDiv = document.createElement("div");
+    shipPlacementDiv.className = "shipPlacement";
+
+    const shipPlacementHeader = document.createElement("h2");
+    shipPlacementHeader.innerText = "Place Your Ships";
+    shipPlacementDiv.appendChild(shipPlacementHeader);
+
+    const boardDiv = document.createElement("div");
+    boardDiv.className = "board";
+    shipPlacementDiv.appendChild(boardDiv);
+
+    shipPlacementForm.appendChild(shipPlacementDiv);
+
+    const randomizeShipsBtn = document.createElement("button");
+    randomizeShipsBtn.className = "shipPlacementBtn";
+    randomizeShipsBtn.type = "button";
+    randomizeShipsBtn.innerText = "Randomize Ships";
+    randomizeShipsBtn.addEventListener("click", () => {
+      player.randomizeShipLocations();
+      this.#updateShipPlacementDisplay(player);
+    });
+    shipPlacementForm.appendChild(randomizeShipsBtn);
+
+    const clearBoardBtn = document.createElement("button");
+    clearBoardBtn.className = "shipPlacementBtn";
+    clearBoardBtn.type = "button";
+    clearBoardBtn.innerText = "Clear Board";
+    clearBoardBtn.addEventListener("click", () => {
+      player.clearShipLocations();
+      this.#updateShipPlacementDisplay(player);
+    });
+    shipPlacementForm.appendChild(clearBoardBtn);
+
+    const placeShipsBtn = document.createElement("button");
+    placeShipsBtn.className = "placeShipsBtn";
+    placeShipsBtn.type = "submit";
+    placeShipsBtn.innerText = "Confirm Ship Placement";
+    placeShipsBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (player.placeShipsOnBoard()) {
+        this.#startGame();
+      }
+    });
+    shipPlacementForm.appendChild(placeShipsBtn);
+
+    //after everything
+    pageMain.innerHTML = "";
+    pageMain.appendChild(shipPlacementForm);
+
+    this.#updateShipPlacementDisplay(player);
+    //   <form class="startForm" id="shipPlacementForm">
+    //     <div class="shipPlacement">
+    //       <h2>Place Your Ships</h2
+    //       <div class="board">
+    //       </div>
+    //     </div>
+    //     <button class="shipPlacementBtn" type="button">Randomize Ships</button>
+    //     <button class="shipPlacementBtn" type="button">Clear Board</button>
+    //     <button class="placeShipsBtn" type="submit">Confirm Ship Placement</button>
+    //  </form>
+  }
+
+  #updateShipPlacementDisplay(player) {
+    const placementBoard = new Gameboard();
+    player.ships.forEach(({ ship, location, isHorizontal }) => {
+      if (location) {
+        placementBoard.placeShip(ship, location, isHorizontal);
+      }
+    });
+    this.#drawBoard(
+      placementBoard.board,
+      document.querySelector(".shipPlacement"),
+      false,
+      false
+    );
   }
 
   #showMultiPlayerLocalForm() {
@@ -525,6 +610,13 @@ export default class ScreenController {
   }
 
   #startGame() {
+    if (!this.#game.player1.shipsConfirmed) {
+      this.#showShipPlacementForm(this.#game.player1);
+      return;
+    } else if (!this.#game.player2.shipsConfirmed) {
+      this.#showShipPlacementForm(this.#game.player2);
+      return;
+    }
     this.#showGame();
     this.#game
       .start(

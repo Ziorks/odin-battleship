@@ -49,7 +49,8 @@ main {
 }
 
 .gamemodeBtn,
-.startBtn {
+.startBtn,
+.placeShipsBtn {
   margin: 15px auto;
   display: block;
   padding: 5px;

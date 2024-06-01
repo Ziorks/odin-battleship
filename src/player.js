@@ -11,6 +11,7 @@ export class Player {
     { ship: new Ship("Submarine", 3), location: null, isHorizontal: true },
     { ship: new Ship("Patrol Boat", 2), location: null, isHorizontal: true },
   ];
+  #shipsConfirmed = false;
 
   constructor(name) {
     this.#name = name;
@@ -28,6 +29,10 @@ export class Player {
     return this.#ships;
   }
 
+  get shipsConfirmed() {
+    return this.#shipsConfirmed;
+  }
+
   #shipsReadyToPlace() {
     let result = true;
     const testBoard = new Gameboard();
@@ -41,7 +46,22 @@ export class Player {
     return result;
   }
 
+  clearShipLocations() {
+    if (this.#shipsConfirmed) {
+      return false;
+    }
+
+    this.#ships.forEach((ship) => {
+      ship.location = null;
+      ship.isHorizontal = true;
+    });
+  }
+
   randomizeShipLocations() {
+    if (this.#shipsConfirmed) {
+      return false;
+    }
+
     const testBoard = new Gameboard();
     this.#ships.forEach(({ ship, location, isHorizontal }, index) => {
       let placed = false;
@@ -66,6 +86,7 @@ export class Player {
     this.#ships.forEach(({ ship, location, isHorizontal }) => {
       this.#board.placeShip(ship, location, isHorizontal);
     });
+    this.#shipsConfirmed = true;
     return true;
   }
 
