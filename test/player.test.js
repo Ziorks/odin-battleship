@@ -2,18 +2,50 @@ import { Player, Bot } from "../src/player";
 
 describe("Player unit tests", () => {
   describe("Getters", () => {
-    test("Human", () => {
-      const testPlayer = new Player("test human player");
-      expect(testPlayer.name).toBe("test human player");
-      expect(testPlayer.board).toHaveLength(100);
-      expect(testPlayer.ships).toHaveLength(5);
+    describe("Human", () => {
+      let testPlayer;
+      beforeEach(() => {
+        testPlayer = new Player("test human player");
+      });
+
+      test("name", () => {
+        expect(testPlayer.name).toBe("test human player");
+      });
+
+      test("board", () => {
+        expect(testPlayer.board).toHaveLength(100);
+      });
+
+      test("ships", () => {
+        expect(testPlayer.ships).toHaveLength(5);
+      });
+
+      test("shipsConfirmed", () => {
+        expect(testPlayer.shipsConfirmed).toBe(false);
+      });
     });
 
-    test("Computer", () => {
-      const testPlayer = new Bot("test computer player");
-      expect(testPlayer.name).toBe("test computer player");
-      expect(testPlayer.board).toHaveLength(100);
-      expect(testPlayer.ships).toHaveLength(5);
+    describe("Computer", () => {
+      let testPlayer;
+      beforeEach(() => {
+        testPlayer = new Bot("test computer player");
+      });
+
+      test("name", () => {
+        expect(testPlayer.name).toBe("test computer player");
+      });
+
+      test("board", () => {
+        expect(testPlayer.board).toHaveLength(100);
+      });
+
+      test("ships", () => {
+        expect(testPlayer.ships).toHaveLength(5);
+      });
+
+      test("shipsConfirmed", () => {
+        expect(testPlayer.shipsConfirmed).toBe(true);
+      });
     });
   });
 
@@ -30,10 +62,31 @@ describe("Player unit tests", () => {
       );
     });
 
+    test("ClearShipLocations", () => {
+      humanPlayer.randomizeShipLocations();
+      humanPlayer.clearShipLocations();
+      expect(
+        humanPlayer.ships.every(
+          (ship) => ship.location === null && ship.isHorizontal === true
+        )
+      ).toBe(true);
+    });
+
     test("placeShipsOnBoard", () => {
       expect(humanPlayer.placeShipsOnBoard()).toBe(false);
       humanPlayer.randomizeShipLocations();
       expect(humanPlayer.placeShipsOnBoard()).toBe(true);
+    });
+
+    test("setShipLocation", () => {
+      expect(humanPlayer.setShipLocation("Destroyer", [0, 0], true)).toBe(true);
+      expect(humanPlayer.setShipLocation("Destroyer", [0, 0], true)).toBe(true);
+      expect(humanPlayer.setShipLocation("Battleship", [8, 0], false)).toBe(
+        false
+      );
+      expect(humanPlayer.setShipLocation("Submarine", [0, 0], true)).toBe(
+        false
+      );
     });
   });
 });

@@ -26,14 +26,14 @@ export class Player {
   }
 
   get ships() {
-    return this.#ships;
+    return [...this.#ships];
   }
 
   get shipsConfirmed() {
     return this.#shipsConfirmed;
   }
 
-  #shipsReadyToPlace() {
+  #allShipsPlaceable() {
     let result = true;
     const testBoard = new Gameboard();
     this.#ships.forEach(({ ship, location, isHorizontal }) => {
@@ -46,6 +46,34 @@ export class Player {
     return result;
   }
 
+  setShipLocation(shipName, location, isHorizontal) {
+    if (this.#shipsConfirmed) {
+      return false;
+    }
+
+    const testShips = this.#ships.map((item) => {
+      if (item.ship.name === shipName) {
+        item.location = location;
+        item.isHorizontal = isHorizontal;
+      }
+      return item;
+    });
+
+    const testBoard = new Gameboard();
+    let placed = true;
+    testShips.forEach(({ ship, location, isHorizontal }) => {
+      if (location) {
+        placed = placed && testBoard.placeShip(ship, location, isHorizontal);
+      }
+    });
+
+    if (placed) {
+      this.#ships = testShips;
+      return true;
+    }
+    return false;
+  }
+
   clearShipLocations() {
     if (this.#shipsConfirmed) {
       return false;
@@ -55,6 +83,7 @@ export class Player {
       ship.location = null;
       ship.isHorizontal = true;
     });
+    return true;
   }
 
   randomizeShipLocations() {
@@ -76,10 +105,11 @@ export class Player {
       this.#ships[index].location = location;
       this.#ships[index].isHorizontal = isHorizontal;
     });
+    return true;
   }
 
   placeShipsOnBoard() {
-    if (!this.#shipsReadyToPlace()) {
+    if (!this.#allShipsPlaceable()) {
       return false;
     }
 
