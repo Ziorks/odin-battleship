@@ -29,7 +29,16 @@ export class Player {
   }
 
   #shipsReadyToPlace() {
-    return this.#ships.every(({ location }) => location !== null);
+    let result = true;
+    const testBoard = new Gameboard();
+    this.#ships.forEach(({ ship, location, isHorizontal }) => {
+      if (location) {
+        result = result && testBoard.placeShip(ship, location, isHorizontal);
+      } else {
+        result = false;
+      }
+    });
+    return result;
   }
 
   randomizeShipLocations() {
