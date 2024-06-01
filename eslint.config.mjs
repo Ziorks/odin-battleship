@@ -18,15 +18,6 @@ export default [
   },
   { languageOptions: { globals: globals.browser } },
   {
-    files: ["test/**"],
-    ...jest.configs["flat/style"],
-    rules: {
-      ...jest.configs["flat/style"].rules,
-      "jest/prefer-expect-assertions": "off",
-    },
-    languageOptions: { globals: globals.jest },
-  },
-  {
     ignores: [
       "node_modules/*",
       "dist/*",
