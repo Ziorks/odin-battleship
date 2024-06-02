@@ -85,8 +85,13 @@ main {
   font-size: 1.2rem;
 }
 
-.game {
+.game,
+.shipPlacement {
   font-size: calc(var(--gridSize) * 0.8);
+}
+
+.game > * {
+  margin: 15px 0;
 }
 
 .lastAttack,
@@ -99,21 +104,21 @@ main {
   justify-content: space-evenly;
 }
 
-.rematchBtn,
-.newGameBtn,
+.endGameBtn,
 .shipPlacementBtn {
   font-size: 1em;
   padding: 5px;
 }
 
-.playerContainer {
+.playerContainer,
+.shipPlacement {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
 }
 
 .board {
-  margin: 10px auto;
   background-color: black;
   box-shadow: 3px 3px 10px rgb(0, 0, 0);
   display: grid;

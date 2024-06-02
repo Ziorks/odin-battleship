@@ -641,13 +641,13 @@ export default class ScreenController {
     const gameOverDiv = document.querySelector(".gameOverMenu");
 
     const rematchBtn = document.createElement("button");
-    rematchBtn.className = "rematchBtn";
+    rematchBtn.className = "endGameBtn";
     rematchBtn.innerText = "Rematch";
     rematchBtn.addEventListener("click", () => this.#handleRematch());
     gameOverDiv.appendChild(rematchBtn);
 
     const newGameBtn = document.createElement("button");
-    newGameBtn.className = "newGameBtn";
+    newGameBtn.className = "endGameBtn";
     newGameBtn.innerText = "New Game";
     newGameBtn.addEventListener("click", () => this.#showGamemodeSelect());
     gameOverDiv.appendChild(newGameBtn);
