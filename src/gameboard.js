@@ -61,13 +61,14 @@ export default class Gameboard {
       return null;
     }
 
+    let result = "miss";
     const boardSpace = this.#board[boardIndex];
     boardSpace.isHit = true;
     if (boardSpace.ship) {
       boardSpace.ship.hit();
-      return "hit";
+      result = boardSpace.ship.isSunk() ? "sunk" : "hit";
     }
-    return "miss";
+    return result;
   }
 
   allShipsSunk() {

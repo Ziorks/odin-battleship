@@ -64,9 +64,15 @@ export default class Game {
       return null;
     }
 
+    if (this.#attackingPlayer instanceof Bot) {
+      this.#attackingPlayer.handleAttackResponse(attackResult);
+    }
+
     const message = `${this.#attackingPlayer.name} attacked [${location[0]},  ${
       location[1]
-    }] and it was a ${attackResult}${attackResult === "hit" ? "!" : "."}`;
+    }] and it was a ${attackResult === "miss" ? "miss" : "hit"}${
+      attackResult === "hit" ? "!" : "."
+    }`;
 
     if (this.receivingPlayer.allShipsSunk()) {
       this.#isGameOver = true;
@@ -83,7 +89,7 @@ export default class Game {
       let input;
 
       if (this.#attackingPlayer instanceof Bot) {
-        input = this.#attackingPlayer.getAttack();
+        input = this.#attackingPlayer.getAttackLocation();
         await new Promise((resolve) => setTimeout(resolve, 10));
       } else {
         input = await playerInput();

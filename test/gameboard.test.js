@@ -94,7 +94,7 @@ describe("Gameboard unit tests", () => {
     test("attack a ship", () => {
       expect(gameboard.receiveAttack([0, 0])).toBe("hit");
       expect(gameboard.board[0].isHit).toBe(true);
-      expect(gameboard.receiveAttack([0, 1])).toBe("hit");
+      expect(gameboard.receiveAttack([0, 1])).toBe("sunk");
       expect(gameboard.board[0].ship.isSunk()).toBe(true);
     });
 
