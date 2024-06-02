@@ -1,5 +1,4 @@
 import Game from "./game";
-import Gameboard from "./gameboard";
 
 export default class ScreenController {
   #game;
@@ -382,7 +381,7 @@ export default class ScreenController {
     player.ships.forEach(({ ship }) => {
       const option = document.createElement("option");
       option.value = ship.name;
-      option.innerText = ship.name;
+      option.innerText = `${ship.name}(${ship.shipLength})`;
       shipSelectorBox.appendChild(option);
     });
 
@@ -551,14 +550,8 @@ export default class ScreenController {
   }
 
   #updateShipPlacementDisplay(player) {
-    const placementBoard = new Gameboard();
-    player.ships.forEach(({ ship, location, isHorizontal }) => {
-      if (location) {
-        placementBoard.placeShip(ship, location, isHorizontal);
-      }
-    });
     this.#drawBoard(
-      placementBoard.board,
+      player,
       document.querySelector(".shipPlacement"),
       false,
       false
@@ -579,6 +572,10 @@ export default class ScreenController {
     opponentHeader.className = "playerName";
     opponentContainer.appendChild(opponentHeader);
 
+    const opponentShipsDiv = document.createElement("div");
+    opponentShipsDiv.className = "boardShips";
+    opponentContainer.appendChild(opponentShipsDiv);
+
     const opponentBoardDiv = document.createElement("div");
     opponentBoardDiv.className = "board";
     opponentContainer.appendChild(opponentBoardDiv);
@@ -593,11 +590,6 @@ export default class ScreenController {
     currentTurnP.className = "currentTurn";
     gameDiv.appendChild(currentTurnP);
 
-    const gameOverDiv = document.createElement("div");
-    gameOverDiv.className = "gameOverMenu";
-
-    gameDiv.appendChild(gameOverDiv);
-
     const playerContainer = document.createElement("div");
     playerContainer.className = "playerContainer";
     playerContainer.id = "playerContainer";
@@ -605,6 +597,10 @@ export default class ScreenController {
     const playerBoardDiv = document.createElement("div");
     playerBoardDiv.className = "board";
     playerContainer.appendChild(playerBoardDiv);
+
+    const playerShipsDiv = document.createElement("div");
+    playerShipsDiv.className = "boardShips";
+    playerContainer.appendChild(playerShipsDiv);
 
     const playerHeader = document.createElement("h2");
     playerHeader.className = "playerName";
@@ -623,10 +619,6 @@ export default class ScreenController {
     //   </div>
     //   <p class="lastAttack"></p>
     //   <p class="currentTurn"></p>
-    //   <div class="gameOverMenu">
-    //     <button class="rematchBtn">Rematch</button> (added when game over)
-    //     <button class="newGameBtn">New Game</button> (added when game over)
-    //   </div>
     //   <div class="playerContainer" id="playerContainer">
     //     <div class="board"></div>
     //     <h2 class="playerName"></h2>
@@ -638,7 +630,8 @@ export default class ScreenController {
     const currentTurnP = document.querySelector(".currentTurn");
     currentTurnP.innerText = winner;
 
-    const gameOverDiv = document.querySelector(".gameOverMenu");
+    const gameOverDiv = document.createElement("div");
+    gameOverDiv.className = "gameOverMenu";
 
     const rematchBtn = document.createElement("button");
     rematchBtn.className = "endGameBtn";
@@ -651,6 +644,8 @@ export default class ScreenController {
     newGameBtn.innerText = "New Game";
     newGameBtn.addEventListener("click", () => this.#showGamemodeSelect());
     gameOverDiv.appendChild(newGameBtn);
+
+    currentTurnP.insertAdjacentElement("afterend", gameOverDiv);
   }
 
   #updateGameDisplay(message = "") {
@@ -667,27 +662,20 @@ export default class ScreenController {
     playerContainer.querySelector(".playerName").textContent =
       this.#game.player1.name;
 
+    this.#updateBoardShipsDiv(this.#game.player2, opponentContainer);
+    this.#updateBoardShipsDiv(this.#game.player1, playerContainer);
+
     if (this.#game.gametype === "bots") {
-      this.#drawBoard(
-        this.#game.player2.board,
-        opponentContainer,
-        false,
-        false
-      );
-      this.#drawBoard(this.#game.player1.board, playerContainer, false, false);
+      this.#drawBoard(this.#game.player2, opponentContainer, false, false);
+      this.#drawBoard(this.#game.player1, playerContainer, false, false);
     } else if (this.#game.gametype === "pvb") {
       const isPlayable = this.#game.attackingPlayer == this.#game.player1;
-      this.#drawBoard(
-        this.#game.player2.board,
-        opponentContainer,
-        true,
-        isPlayable
-      );
-      this.#drawBoard(this.#game.player1.board, playerContainer, false, false);
+      this.#drawBoard(this.#game.player2, opponentContainer, true, isPlayable);
+      this.#drawBoard(this.#game.player1, playerContainer, false, false);
     }
   }
 
-  #drawBoard(board, container, hideShips, isPlayable) {
+  #drawBoard(player, container, hideShips, isPlayable) {
     const boardDiv = container.querySelector(".board");
     boardDiv.innerHTML = "";
     for (let row = 0; row < 11; row++) {
@@ -706,7 +694,7 @@ export default class ScreenController {
           boardSpaceDiv.textContent = boardColumn;
           boardDiv.appendChild(boardSpaceDiv);
         } else {
-          const space = board[boardRow * 10 + boardColumn];
+          const space = player.board[boardRow * 10 + boardColumn];
           if (hideShips && isPlayable && !space.isHit) {
             const boardSpaceBtn = document.createElement("button");
             boardSpaceBtn.dataset.row = boardRow;
@@ -726,6 +714,24 @@ export default class ScreenController {
         }
       }
     }
+  }
+
+  #updateBoardShipsDiv(player, container) {
+    const boardShipsDiv = container.querySelector(".boardShips");
+    boardShipsDiv.innerHTML = "";
+
+    const boardShipsHeader = document.createElement("h3");
+    boardShipsHeader.textContent = "Remaining Ships";
+    boardShipsDiv.appendChild(boardShipsHeader);
+
+    player.ships.forEach(({ ship }) => {
+      if (ship.isSunk()) {
+        return;
+      }
+      const shipSpan = document.createElement("span");
+      shipSpan.innerText = `${ship.name}(${ship.shipLength})`;
+      boardShipsDiv.appendChild(shipSpan);
+    });
   }
 
   #handleRematch() {

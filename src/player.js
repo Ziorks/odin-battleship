@@ -18,7 +18,9 @@ export class Player {
   }
 
   get board() {
-    return this.#board.board;
+    return this.#shipsConfirmed
+      ? this.#board.board
+      : this.#getShipPreviewBoard();
   }
 
   get name() {
@@ -44,6 +46,16 @@ export class Player {
       }
     });
     return result;
+  }
+
+  #getShipPreviewBoard() {
+    const previewBoard = new Gameboard();
+    this.#ships.forEach(({ ship, location, isHorizontal }) => {
+      if (location) {
+        previewBoard.placeShip(ship, location, isHorizontal);
+      }
+    });
+    return [...previewBoard.board];
   }
 
   setShipLocation(shipName, location, isHorizontal) {
