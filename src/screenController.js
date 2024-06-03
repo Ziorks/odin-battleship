@@ -830,7 +830,7 @@ export default class ScreenController {
       return;
     }
 
-    const welcomeMessage = "Welcome Games!";
+    const welcomeMessage = "Welcome Gamers!";
     if (this.#game.gametype === "pvp") {
       this.#showPrivacyScreen(welcomeMessage);
     } else {
