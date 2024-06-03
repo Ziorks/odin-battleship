@@ -390,6 +390,25 @@ export default class ScreenController {
       this.#drawBoard(player, shipPreviewDiv, false, false);
     };
 
+    const updateShipsContainer = () => {
+      shipsContainerDiv.innerHTML = "";
+      player.ships.forEach((ship) => {
+        if (ship.location) {
+          return;
+        }
+        const dragableShipDiv = document.createElement("div");
+        dragableShipDiv.className = "dragableShip";
+
+        for (let i = 0; i < ship.ship.shipLength; i++) {
+          const dragableShipSpace = document.createElement("div");
+          dragableShipSpace.className = "dragableShipSpace";
+          dragableShipDiv.appendChild(dragableShipSpace);
+        }
+
+        shipsContainerDiv.appendChild(dragableShipDiv);
+      });
+    };
+
     const pageMain = document.querySelector("main");
 
     const shipPreviewDiv = document.createElement("div");
@@ -407,114 +426,18 @@ export default class ScreenController {
     boardDiv.className = "board";
     shipPreviewDiv.appendChild(boardDiv);
 
-    //start single ship placement form
-    const shipPlacementForm = document.createElement("form");
-    shipPlacementForm.className = "shipPlacementForm";
+    const dragAndDropHeader = document.createElement("h4");
+    dragAndDropHeader.textContent = "Drag and drop ships onto board.";
+    shipPreviewDiv.appendChild(dragAndDropHeader);
 
-    const shipSelectorDiv = document.createElement("div");
+    const dragAndDropTip = document.createElement("p");
+    dragAndDropTip.textContent = "(press 'R' while dragging to rotate).";
+    shipPreviewDiv.appendChild(dragAndDropTip);
 
-    const shipSelectorLabel = document.createElement("label");
-    shipSelectorLabel.htmlFor = "ships";
-    shipSelectorLabel.innerText = "Ship";
-    shipSelectorDiv.appendChild(shipSelectorLabel);
+    const shipsContainerDiv = document.createElement("div");
+    shipsContainerDiv.className = "shipsContainer";
 
-    const shipSelectorBox = document.createElement("select");
-    shipSelectorBox.name = "ships";
-    shipSelectorBox.id = "ships";
-
-    player.ships.forEach(({ ship }) => {
-      const option = document.createElement("option");
-      option.value = ship.name;
-      option.innerText = `${ship.name}(${ship.shipLength})`;
-      shipSelectorBox.appendChild(option);
-    });
-
-    shipSelectorDiv.appendChild(shipSelectorBox);
-    shipPlacementForm.appendChild(shipSelectorDiv);
-
-    const rowDiv = document.createElement("div");
-
-    const rowLabel = document.createElement("label");
-    rowLabel.htmlFor = "row";
-    rowLabel.innerText = "Row";
-    rowDiv.appendChild(rowLabel);
-
-    const rowInput = document.createElement("input");
-    rowInput.type = "number";
-    rowInput.name = "row";
-    rowInput.id = "row";
-    rowInput.min = "0";
-    rowInput.max = "9";
-    rowInput.value = "0";
-    rowDiv.appendChild(rowInput);
-
-    shipPlacementForm.appendChild(rowDiv);
-
-    const columnDiv = document.createElement("div");
-
-    const columnLabel = document.createElement("label");
-    columnLabel.htmlFor = "column";
-    columnLabel.innerText = "Column";
-    columnDiv.appendChild(columnLabel);
-
-    const columnInput = document.createElement("input");
-    columnInput.type = "number";
-    columnInput.name = "column";
-    columnInput.id = "column";
-    columnInput.min = "0";
-    columnInput.max = "9";
-    columnInput.value = "0";
-    columnDiv.appendChild(columnInput);
-
-    shipPlacementForm.appendChild(columnDiv);
-
-    const orientationDiv = document.createElement("div");
-
-    const horizontalLabel = document.createElement("label");
-    horizontalLabel.htmlFor = "horizontal";
-    horizontalLabel.innerText = "Horizontal ";
-    orientationDiv.appendChild(horizontalLabel);
-
-    const horizontalInput = document.createElement("input");
-    horizontalInput.type = "radio";
-    horizontalInput.name = "orientation";
-    horizontalInput.id = "horizontal";
-    horizontalInput.value = "horizontal";
-    horizontalInput.checked = true;
-    orientationDiv.appendChild(horizontalInput);
-
-    const verticalLabel = document.createElement("label");
-    verticalLabel.htmlFor = "vertical";
-    verticalLabel.innerText = "Vertical ";
-    orientationDiv.appendChild(verticalLabel);
-
-    const verticalInput = document.createElement("input");
-    verticalInput.type = "radio";
-    verticalInput.name = "orientation";
-    verticalInput.id = "vertical";
-    verticalInput.value = "vertical";
-    orientationDiv.appendChild(verticalInput);
-
-    shipPlacementForm.appendChild(orientationDiv);
-
-    const singleShipPlacementBtn = document.createElement("button");
-    singleShipPlacementBtn.type = "submit";
-    singleShipPlacementBtn.innerText = "Place Ship";
-    singleShipPlacementBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const shipName = document.getElementById("ships").value;
-      const row = Number(document.getElementById("row").value);
-      const column = Number(document.getElementById("column").value);
-      const isHorizontal = document.getElementById("horizontal").checked;
-      if (player.setShipLocation(shipName, [row, column], isHorizontal)) {
-        updatePreviewBoard();
-      }
-    });
-
-    shipPlacementForm.appendChild(singleShipPlacementBtn);
-    shipPreviewDiv.appendChild(shipPlacementForm);
-
-    //end single ship placement form
+    shipPreviewDiv.appendChild(shipsContainerDiv);
 
     const shipPlacementBtnsDiv = document.createElement("div");
     shipPlacementBtnsDiv.className = "shipPlacementBtns";
@@ -525,6 +448,7 @@ export default class ScreenController {
     randomizeShipsBtn.addEventListener("click", () => {
       player.randomizeShipLocations();
       updatePreviewBoard();
+      updateShipsContainer();
     });
     shipPlacementBtnsDiv.appendChild(randomizeShipsBtn);
 
@@ -534,6 +458,7 @@ export default class ScreenController {
     clearBoardBtn.addEventListener("click", () => {
       player.clearShipLocations();
       updatePreviewBoard();
+      updateShipsContainer();
     });
     shipPlacementBtnsDiv.appendChild(clearBoardBtn);
 
@@ -559,37 +484,18 @@ export default class ScreenController {
     pageMain.appendChild(shipPreviewDiv);
 
     updatePreviewBoard();
+    updateShipsContainer();
     // <div class="shipPreview">
     //   <h2>[PlayerName]</h2>
-    //   <h3>Place Your Ships</h3>
+    //   <h4>Place Your Ships</h4>
     //   <div class="board"></div>
-    //   <form class="shipPlacementForm">
-    //     <div>
-    //       <label for="ships">Ship</label>
-    //       <select name="ships" id="ships">
-    //         <option value="Carrier">Carrier(5)</option>
-    //         <option value="Battleship">Battleship(4)</option>
-    //         <option value="Destroyer">Destroyer(3)</option>
-    //         <option value="Submarine">Submarine(3)</option>
-    //         <option value="Patrol Boat">Patrol Boat(2)</option>
-    //       </select>
-    //     </div>
-    //     <div>
-    //       <label for="row">Row</label>
-    //       <input type="number" name="row" id="row" min="0" max="9" />
-    //     </div>
-    //     <div>
-    //       <label for="column">Column</label>
-    //       <input type="number" name="column" id="column" min="0" max="9" />
-    //     </div>
-    //     <div>
-    //       <label for="horizontal">Horizontal </label>
-    //       <input type="radio" name="orientation" id="horizontal" value="horizontal" />
-    //       <label for="vertical">Vertical </label>
-    //       <input type="radio" name="orientation" id="vertical" value="vertical" />
-    //     </div>
-    //     <button type="submit">Place Ship</button>
-    //   </form>
+    //   <h3>Drag and drop ships onto board</h3>
+    //   <p>(press "R" while dragging to rotate)</p>
+    //   <div class="shipContainer">
+    //     <div class="dragableShip"></div>
+    //     ...
+    //     <div class="dragableShip"></div>
+    //   </div>
     //   <div class="shipPlacementBtns">
     //     <button type="button">Randomize Ships</button>
     //     <button type="button">Clear Board</button>
