@@ -44,7 +44,6 @@ export default class ScreenController {
 
     const multiPlayerLocalBtn = document.createElement("button");
     multiPlayerLocalBtn.innerText = "Player vs Player (local)";
-    multiPlayerLocalBtn.disabled = true; //disabled until functionality exists
     multiPlayerLocalBtn.addEventListener("click", () =>
       this.#showMultiPlayerLocalForm()
     );
@@ -631,8 +630,6 @@ export default class ScreenController {
 
     pageMain.innerHTML = "";
     pageMain.appendChild(gameDiv);
-
-    this.#updateGameDisplay("Welcome Gamers!");
     // <div class="game">
     //   <div class="playerContainer" id="opponentContainer">
     //     <h2 class="playerName"></h2>
@@ -669,6 +666,51 @@ export default class ScreenController {
     currentTurnP.insertAdjacentElement("afterend", gameOverDiv);
   }
 
+  #showPrivacyScreen(message) {
+    const pageMain = document.querySelector("main");
+
+    const privacyDiv = document.createElement("div");
+    privacyDiv.className = "privacyScreen";
+
+    const turnHeader = document.createElement("h2");
+    turnHeader.textContent = `It's ${this.#game.attackingPlayer.name}'s turn.`;
+    privacyDiv.appendChild(turnHeader);
+
+    const instructions = document.createElement("p");
+    instructions.textContent = `Make sure ${
+      this.#game.receivingPlayer.name
+    } isn't looking and press button to continue.`;
+    privacyDiv.appendChild(instructions);
+
+    const showGameBtn = document.createElement("button");
+    showGameBtn.type = "button";
+    showGameBtn.innerText = "Show Game";
+    showGameBtn.addEventListener("click", () => {
+      this.#showGame();
+
+      const opponentContainer = document.getElementById("opponentContainer");
+      const playerContainer = document.getElementById("playerContainer");
+      const lastAttackP = document.querySelector(".lastAttack");
+      const currentTurnP = document.querySelector(".currentTurn");
+      const attacker = this.#game.attackingPlayer;
+      const receiver = this.#game.receivingPlayer;
+
+      lastAttackP.innerText = message;
+      currentTurnP.innerText = `It's ${attacker.name}'s turn.`;
+      opponentContainer.querySelector(".playerName").textContent =
+        receiver.name;
+      playerContainer.querySelector(".playerName").textContent = attacker.name;
+      this.#drawBoard(receiver, opponentContainer, true, true);
+      this.#drawBoard(attacker, playerContainer, false, false);
+      this.#updateBoardShipsDiv(receiver, opponentContainer);
+      this.#updateBoardShipsDiv(attacker, playerContainer);
+    });
+    privacyDiv.appendChild(showGameBtn);
+
+    pageMain.innerHTML = "";
+    pageMain.appendChild(privacyDiv);
+  }
+
   #updateGameDisplay(message = "") {
     const opponentContainer = document.getElementById("opponentContainer");
     const playerContainer = document.getElementById("playerContainer");
@@ -693,6 +735,17 @@ export default class ScreenController {
       const isPlayable = this.#game.attackingPlayer == this.#game.player1;
       this.#drawBoard(this.#game.player2, opponentContainer, true, isPlayable);
       this.#drawBoard(this.#game.player1, playerContainer, false, false);
+    } else if (this.#game.gametype === "pvp") {
+      this.#updateBoardShipsDiv(this.#game.attackingPlayer, opponentContainer);
+      this.#drawBoard(
+        this.#game.attackingPlayer,
+        opponentContainer,
+        true,
+        false
+      );
+      setTimeout(() => {
+        this.#showPrivacyScreen(message);
+      }, 2000);
     }
   }
 
@@ -776,13 +829,17 @@ export default class ScreenController {
       this.#showShipPlacementForm(this.#game.player2);
       return;
     }
-    this.#showGame();
+
+    const welcomeMessage = "Welcome Games!";
+    if (this.#game.gametype === "pvp") {
+      this.#showPrivacyScreen(welcomeMessage);
+    } else {
+      this.#showGame();
+      this.#updateGameDisplay(welcomeMessage);
+    }
+
     this.#game
-      .start(
-        this.#updateGameDisplay.bind(this),
-        this.#playerInput,
-        this.#playerInput
-      )
+      .start(this.#updateGameDisplay.bind(this), this.#playerInput)
       .then((winner) => this.#showEndScreen(winner));
   }
 

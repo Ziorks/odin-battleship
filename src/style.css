@@ -129,6 +129,20 @@ main {
   background-color: grey;
 }
 
+.privacyScreen {
+  text-align: center;
+}
+
+.privacyScreen > * {
+  margin: 20px 0;
+}
+
+.privacyScreen > button {
+  width: 100%;
+  padding: 5px;
+  font-size: 2rem;
+}
+
 .game,
 .shipPreview {
   font-size: calc(var(--gridSize) * 0.8);
