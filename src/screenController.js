@@ -386,6 +386,10 @@ export default class ScreenController {
   }
 
   #showShipPlacementForm(player) {
+    const updatePreviewBoard = () => {
+      this.#drawBoard(player, shipPreviewDiv, false, false);
+    };
+
     const pageMain = document.querySelector("main");
 
     const shipPreviewDiv = document.createElement("div");
@@ -503,7 +507,7 @@ export default class ScreenController {
       const column = Number(document.getElementById("column").value);
       const isHorizontal = document.getElementById("horizontal").checked;
       if (player.setShipLocation(shipName, [row, column], isHorizontal)) {
-        this.#updateShipPlacementDisplay(player);
+        updatePreviewBoard();
       }
     });
 
@@ -520,7 +524,7 @@ export default class ScreenController {
     randomizeShipsBtn.innerText = "Randomize Ships";
     randomizeShipsBtn.addEventListener("click", () => {
       player.randomizeShipLocations();
-      this.#updateShipPlacementDisplay(player);
+      updatePreviewBoard();
     });
     shipPlacementBtnsDiv.appendChild(randomizeShipsBtn);
 
@@ -529,7 +533,7 @@ export default class ScreenController {
     clearBoardBtn.innerText = "Clear Board";
     clearBoardBtn.addEventListener("click", () => {
       player.clearShipLocations();
-      this.#updateShipPlacementDisplay(player);
+      updatePreviewBoard();
     });
     shipPlacementBtnsDiv.appendChild(clearBoardBtn);
 
@@ -554,7 +558,7 @@ export default class ScreenController {
     pageMain.innerHTML = "";
     pageMain.appendChild(shipPreviewDiv);
 
-    this.#updateShipPlacementDisplay(player);
+    updatePreviewBoard();
     // <div class="shipPreview">
     //   <h2>[PlayerName]</h2>
     //   <h3>Place Your Ships</h3>
@@ -594,15 +598,6 @@ export default class ScreenController {
     //     <button type="submit">Confirm Ship Placement</button>
     //   </div>
     // </div>
-  }
-
-  #updateShipPlacementDisplay(player) {
-    this.#drawBoard(
-      player,
-      document.querySelector(".shipPreview"),
-      false,
-      false
-    );
   }
 
   #showGame() {
