@@ -54,6 +54,10 @@ export default class Game {
       : this.#player1;
   }
 
+  get isGameOver() {
+    return this.#isGameOver;
+  }
+
   #toggleAttackingPlayer() {
     this.#attackingPlayer = this.receivingPlayer;
   }

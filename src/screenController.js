@@ -743,9 +743,11 @@ export default class ScreenController {
         true,
         false
       );
-      setTimeout(() => {
-        this.#showPrivacyScreen(message);
-      }, 2000);
+      if (!this.#game.isGameOver) {
+        setTimeout(() => {
+          this.#showPrivacyScreen(message);
+        }, 2000);
+      }
     }
   }
 
