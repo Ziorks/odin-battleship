@@ -32,11 +32,35 @@ main {
 }
 
 .gamemode {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 1.2rem;
+}
+
+.gamemode button {
+  padding: 5px 0;
+  font-size: 1.2rem;
+  position: relative;
+}
+
+.gamemode button:disabled::after {
+  z-index: 1;
+  position: absolute;
+  width: max-content;
+  left: 120px;
+  rotate: -15deg;
+  content: "Under Construction";
+  color: yellow;
+  font-size: 1.5rem;
 }
 
 .startForm {
   text-align: center;
+}
+
+.startForm > div {
+  margin: 10px 0;
 }
 
 .startForm label {
@@ -48,8 +72,29 @@ main {
   padding: 5px;
 }
 
-.singleShipPlacementForm {
-  margin: 20px 0;
+.formBtns,
+.shipPlacementBtns {
+  display: flex;
+  width: 100%;
+  gap: 5px;
+}
+
+.formBtns button,
+.shipPlacementBtns button {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 1.2rem;
+}
+
+.shipPreview {
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.shipPlacementForm {
+  margin-top: 20px;
   display: flex;
   gap: 5px;
   padding: 5px;
@@ -58,35 +103,27 @@ main {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.singleShipPlacementForm > div {
+.shipPlacementForm > div {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.singleShipPlacementForm select {
-  font-size: 1.3em;
+.shipPlacementForm select {
+  font-size: 1em;
   flex: 1;
   text-align: center;
 }
 
-.singleShipPlacementForm input[type="number"] {
-  text-align: center;
-  width: 3em;
+.shipPlacementForm input[type="number"] {
+  width: 4em;
   flex: 1;
-}
-
-.gamemodeBtn,
-.startBtn,
-.placeShipsBtn {
-  margin: 15px auto;
-  display: block;
-  padding: 5px;
-  font-size: 1.2rem;
+  text-align: center;
+  font-size: 1em;
 }
 
 .game,
-.shipPlacement {
+.shipPreview {
   font-size: calc(var(--gridSize) * 0.8);
 }
 
@@ -104,24 +141,27 @@ main {
   justify-content: space-evenly;
 }
 
-.endGameBtn,
-.shipPlacementBtn {
+.endGameBtn {
   font-size: 1em;
   padding: 5px;
 }
 
-.playerContainer,
-.shipPlacement {
+.playerContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
 }
 
-.boardShips > * {
-  margin: 0 5px;
-  font-weight: bold;
+.boardShips > h3 {
   text-align: center;
+  text-decoration: underline;
+}
+
+.boardShipNames {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .board {
@@ -140,7 +180,6 @@ main {
 }
 
 .boardBtn {
-  cursor: pointer;
   appearance: none;
 }
 

@@ -31,13 +31,11 @@ export default class ScreenController {
     gamemodeDiv.appendChild(gamemodeHeader);
 
     const botMatchBtn = document.createElement("button");
-    botMatchBtn.className = "gamemodeBtn";
     botMatchBtn.innerText = "Bot vs Bot";
     botMatchBtn.addEventListener("click", () => this.#showBotMatchForm());
     gamemodeDiv.appendChild(botMatchBtn);
 
     const singlePlayerBtn = document.createElement("button");
-    singlePlayerBtn.className = "gamemodeBtn";
     singlePlayerBtn.innerText = "Player vs Bot";
     singlePlayerBtn.addEventListener("click", () =>
       this.#showSinglePlayerForm()
@@ -45,7 +43,6 @@ export default class ScreenController {
     gamemodeDiv.appendChild(singlePlayerBtn);
 
     const multiPlayerLocalBtn = document.createElement("button");
-    multiPlayerLocalBtn.className = "gamemodeBtn";
     multiPlayerLocalBtn.innerText = "Player vs Player (local)";
     multiPlayerLocalBtn.disabled = true; //disabled until functionality exists
     multiPlayerLocalBtn.addEventListener("click", () =>
@@ -54,7 +51,6 @@ export default class ScreenController {
     gamemodeDiv.appendChild(multiPlayerLocalBtn);
 
     const multiPlayerOnlineBtn = document.createElement("button");
-    multiPlayerOnlineBtn.className = "gamemodeBtn";
     multiPlayerOnlineBtn.id = "multiPlayerOnlineBtn";
     multiPlayerOnlineBtn.innerText = "Player vs Player (online)";
     multiPlayerOnlineBtn.disabled = true; //disabled until functionality exists
@@ -66,20 +62,12 @@ export default class ScreenController {
     pageMain.innerHTML = "";
     pageMain.appendChild(gamemodeDiv);
     // <div class="gamemode">
-    //     <h2>Select a Gamemode</h2>
-    //     <button class="gamemodeBtn">
-    //       Bot vs Bot
-    //     </button>
-    //     <button class="gamemodeBtn">
-    //       Player vs Bot
-    //     </button>
-    //     <button class="gamemodeBtn" disabled>
-    //       Player vs Player (local)
-    //     </button>
-    //     <button class="gamemodeBtn" disabled>
-    //       Player vs Player (online)
-    //     </button>
-    //   </div>
+    //   <h2>Select a Gamemode</h2>
+    //   <button>Bot vs Bot</button>
+    //   <button>Player vs Bot</button>
+    //   <button>Player vs Player (local)</button>
+    //   <button>Player vs Player (online)</button>
+    // </div>
   }
 
   #showBotMatchForm() {
@@ -117,6 +105,9 @@ export default class ScreenController {
     bot2NameInput.placeholder = "Computer 2";
     bot2NameDiv.appendChild(bot2NameInput);
 
+    const buttonsDiv = document.createElement("div");
+    buttonsDiv.className = "formBtns";
+
     const startGameBtn = document.createElement("button");
     startGameBtn.className = "startBtn";
     startGameBtn.type = "submit";
@@ -128,10 +119,20 @@ export default class ScreenController {
       this.#game = new Game(player1Name, player2Name, "bots");
       this.#startGame();
     });
+    buttonsDiv.appendChild(startGameBtn);
+
+    const backBtn = document.createElement("button");
+    backBtn.className = "backBtn";
+    backBtn.type = "button";
+    backBtn.innerText = "Cancel";
+    backBtn.addEventListener("click", () => {
+      this.#showGamemodeSelect();
+    });
+    buttonsDiv.appendChild(backBtn);
 
     botMatchForm.appendChild(bot1NameDiv);
     botMatchForm.appendChild(bot2NameDiv);
-    botMatchForm.appendChild(startGameBtn);
+    botMatchForm.appendChild(buttonsDiv);
 
     pageMain.innerHTML = "";
     pageMain.appendChild(botMatchForm);
@@ -152,7 +153,10 @@ export default class ScreenController {
     //       id="bot2Name"
     //       placeholder="Computer 2" />
     //   </div>
-    //   <button class="startBtn" type="submit">
+    //   <div class="formBtns">
+    //      <button class="startBtn" type="submit">Start Game</button>
+    //      <button class="backBtn" type="button">Cancel</button>
+    //   </div>
     //     Start Game
     //   </button>
     // </form>
@@ -179,6 +183,9 @@ export default class ScreenController {
     player1NameInput.placeholder = "Player 1";
     player1NameDiv.appendChild(player1NameInput);
 
+    const buttonsDiv = document.createElement("div");
+    buttonsDiv.className = "formBtns";
+
     const startGameBtn = document.createElement("button");
     startGameBtn.className = "startBtn";
     startGameBtn.type = "submit";
@@ -189,25 +196,36 @@ export default class ScreenController {
       this.#game = new Game(player1Name, "Computer", "pvb");
       this.#startGame();
     });
+    buttonsDiv.appendChild(startGameBtn);
+
+    const backBtn = document.createElement("button");
+    backBtn.className = "backBtn";
+    backBtn.type = "button";
+    backBtn.innerText = "Cancel";
+    backBtn.addEventListener("click", () => {
+      this.#showGamemodeSelect();
+    });
+    buttonsDiv.appendChild(backBtn);
 
     singlePlayerForm.appendChild(player1NameDiv);
-    singlePlayerForm.appendChild(startGameBtn);
+    singlePlayerForm.appendChild(buttonsDiv);
 
     pageMain.innerHTML = "";
     pageMain.appendChild(singlePlayerForm);
-    //   <form class="startForm" id="singlePlayerForm">
-    //     <div>
-    //       <label for="player1Name">Player Name: </label>
-    //       <input
-    //         type="text"
-    //         name="player1Name"
-    //         id="player1Name"
-    //         placeholder="Player 1" />
-    //     </div>
-    //     <button class="startBtn" type="submit">
-    //       Start Game
-    //     </button>
-    //  </form>
+    // <form class="startForm" id="singlePlayerForm">
+    //   <div>
+    //     <label for="player1Name">Player Name: </label>
+    //     <input
+    //       type="text"
+    //       name="player1Name"
+    //       id="player1Name"
+    //       placeholder="Player 1" />
+    //   </div>
+    //   <div class="formBtns">
+    //     <button class="startBtn" type="submit">Start Game</button>
+    //     <button class="backBtn" type="button">Cancel</button>
+    //   </div>
+    // </form>
   }
 
   #showMultiPlayerLocalForm() {
@@ -245,6 +263,9 @@ export default class ScreenController {
     player2NameInput.placeholder = "Player 2";
     player2NameDiv.appendChild(player2NameInput);
 
+    const buttonsDiv = document.createElement("div");
+    buttonsDiv.className = "formBtns";
+
     const startGameBtn = document.createElement("button");
     startGameBtn.className = "startBtn";
     startGameBtn.type = "submit";
@@ -256,10 +277,20 @@ export default class ScreenController {
       this.#game = new Game(player1Name, player2Name, "pvp");
       this.#startGame();
     });
+    buttonsDiv.appendChild(startGameBtn);
+
+    const backBtn = document.createElement("button");
+    backBtn.className = "backBtn";
+    backBtn.type = "button";
+    backBtn.innerText = "Cancel";
+    backBtn.addEventListener("click", () => {
+      this.#showGamemodeSelect();
+    });
+    buttonsDiv.appendChild(backBtn);
 
     multiPlayerLocalForm.appendChild(player1NameDiv);
     multiPlayerLocalForm.appendChild(player2NameDiv);
-    multiPlayerLocalForm.appendChild(startGameBtn);
+    multiPlayerLocalForm.appendChild(buttonsDiv);
 
     pageMain.innerHTML = "";
     pageMain.appendChild(multiPlayerLocalForm);
@@ -280,9 +311,10 @@ export default class ScreenController {
     //       id="player2Name"
     //       placeholder="Player 2" />
     //   </div>
-    //   <button class="startBtn" type="submit">
-    //     Start Game
-    //   </button>
+    //   <div class="formBtns">
+    //      <button class="startBtn" type="submit">Start Game</button>
+    //      <button class="backBtn" type="button">Cancel</button>
+    //   </div>
     // </form>
   }
 
@@ -307,6 +339,9 @@ export default class ScreenController {
     player1NameInput.placeholder = "Player 1";
     player1NameDiv.appendChild(player1NameInput);
 
+    const buttonsDiv = document.createElement("div");
+    buttonsDiv.className = "formBtns";
+
     const startGameBtn = document.createElement("button");
     startGameBtn.className = "startBtn";
     startGameBtn.type = "submit";
@@ -318,9 +353,19 @@ export default class ScreenController {
       this.#game = new Game(player1Name, player2Name, "online");
       this.#startGame();
     });
+    buttonsDiv.appendChild(startGameBtn);
+
+    const backBtn = document.createElement("button");
+    backBtn.className = "backBtn";
+    backBtn.type = "button";
+    backBtn.innerText = "Cancel";
+    backBtn.addEventListener("click", () => {
+      this.#showGamemodeSelect();
+    });
+    buttonsDiv.appendChild(backBtn);
 
     multiPlayerOnlineForm.appendChild(player1NameDiv);
-    multiPlayerOnlineForm.appendChild(startGameBtn);
+    multiPlayerOnlineForm.appendChild(buttonsDiv);
 
     pageMain.innerHTML = "";
     pageMain.appendChild(multiPlayerOnlineForm);
@@ -333,39 +378,34 @@ export default class ScreenController {
     //       id="player1Name"
     //       placeholder="Player 1" />
     //   </div>
-    //   <button class="startBtn" type="submit">
-    //     Find Opponent
-    //   </button>
+    //   <div class="formBtns">
+    //      <button class="startBtn" type="submit">Find Opponent</button>
+    //      <button class="backBtn" type="button">Cancel</button>
+    //   </div>
     // </form>
   }
 
   #showShipPlacementForm(player) {
     const pageMain = document.querySelector("main");
 
-    const shipPlacementForm = document.createElement("form");
-    shipPlacementForm.className = "startForm";
-    shipPlacementForm.id = "shipPlacementForm";
+    const shipPreviewDiv = document.createElement("div");
+    shipPreviewDiv.className = "shipPreview";
 
-    const shipPlacementDiv = document.createElement("div");
-    shipPlacementDiv.className = "shipPlacement";
+    const shipPreviewPlayerHeader = document.createElement("h2");
+    shipPreviewPlayerHeader.innerText = player.name;
+    shipPreviewDiv.appendChild(shipPreviewPlayerHeader);
 
-    const shipPlacementPlayerHeader = document.createElement("h2");
-    shipPlacementPlayerHeader.innerText = player.name;
-    shipPlacementDiv.appendChild(shipPlacementPlayerHeader);
-
-    const shipPlacementHeader = document.createElement("h3");
-    shipPlacementHeader.innerText = "Place Your Ships";
-    shipPlacementDiv.appendChild(shipPlacementHeader);
+    const shipPreviewHeader = document.createElement("h3");
+    shipPreviewHeader.innerText = "Place Your Ships";
+    shipPreviewDiv.appendChild(shipPreviewHeader);
 
     const boardDiv = document.createElement("div");
     boardDiv.className = "board";
-    shipPlacementDiv.appendChild(boardDiv);
-
-    shipPlacementForm.appendChild(shipPlacementDiv);
+    shipPreviewDiv.appendChild(boardDiv);
 
     //start single ship placement form
-    const singleShipPlacementForm = document.createElement("form");
-    singleShipPlacementForm.className = "singleShipPlacementForm";
+    const shipPlacementForm = document.createElement("form");
+    shipPlacementForm.className = "shipPlacementForm";
 
     const shipSelectorDiv = document.createElement("div");
 
@@ -386,7 +426,7 @@ export default class ScreenController {
     });
 
     shipSelectorDiv.appendChild(shipSelectorBox);
-    singleShipPlacementForm.appendChild(shipSelectorDiv);
+    shipPlacementForm.appendChild(shipSelectorDiv);
 
     const rowDiv = document.createElement("div");
 
@@ -404,7 +444,7 @@ export default class ScreenController {
     rowInput.value = "0";
     rowDiv.appendChild(rowInput);
 
-    singleShipPlacementForm.appendChild(rowDiv);
+    shipPlacementForm.appendChild(rowDiv);
 
     const columnDiv = document.createElement("div");
 
@@ -422,7 +462,7 @@ export default class ScreenController {
     columnInput.value = "0";
     columnDiv.appendChild(columnInput);
 
-    singleShipPlacementForm.appendChild(columnDiv);
+    shipPlacementForm.appendChild(columnDiv);
 
     const orientationDiv = document.createElement("div");
 
@@ -451,10 +491,9 @@ export default class ScreenController {
     verticalInput.value = "vertical";
     orientationDiv.appendChild(verticalInput);
 
-    singleShipPlacementForm.appendChild(orientationDiv);
+    shipPlacementForm.appendChild(orientationDiv);
 
     const singleShipPlacementBtn = document.createElement("button");
-    singleShipPlacementBtn.className = "shipPlacementBtn";
     singleShipPlacementBtn.type = "submit";
     singleShipPlacementBtn.innerText = "Place Ship";
     singleShipPlacementBtn.addEventListener("click", (e) => {
@@ -468,33 +507,38 @@ export default class ScreenController {
       }
     });
 
-    singleShipPlacementForm.appendChild(singleShipPlacementBtn);
-    shipPlacementForm.appendChild(singleShipPlacementForm);
+    shipPlacementForm.appendChild(singleShipPlacementBtn);
+    shipPreviewDiv.appendChild(shipPlacementForm);
 
     //end single ship placement form
 
+    const shipPlacementBtnsDiv = document.createElement("div");
+    shipPlacementBtnsDiv.className = "shipPlacementBtns";
+
     const randomizeShipsBtn = document.createElement("button");
-    randomizeShipsBtn.className = "shipPlacementBtn";
     randomizeShipsBtn.type = "button";
     randomizeShipsBtn.innerText = "Randomize Ships";
     randomizeShipsBtn.addEventListener("click", () => {
       player.randomizeShipLocations();
       this.#updateShipPlacementDisplay(player);
     });
-    shipPlacementForm.appendChild(randomizeShipsBtn);
+    shipPlacementBtnsDiv.appendChild(randomizeShipsBtn);
 
     const clearBoardBtn = document.createElement("button");
-    clearBoardBtn.className = "shipPlacementBtn";
     clearBoardBtn.type = "button";
     clearBoardBtn.innerText = "Clear Board";
     clearBoardBtn.addEventListener("click", () => {
       player.clearShipLocations();
       this.#updateShipPlacementDisplay(player);
     });
-    shipPlacementForm.appendChild(clearBoardBtn);
+    shipPlacementBtnsDiv.appendChild(clearBoardBtn);
+
+    shipPreviewDiv.appendChild(shipPlacementBtnsDiv);
+
+    const shipsConfirmBtnDiv = document.createElement("div");
+    shipsConfirmBtnDiv.className = "shipPlacementBtns";
 
     const placeShipsBtn = document.createElement("button");
-    placeShipsBtn.className = "placeShipsBtn";
     placeShipsBtn.type = "submit";
     placeShipsBtn.innerText = "Confirm Ship Placement";
     placeShipsBtn.addEventListener("click", (e) => {
@@ -503,56 +547,59 @@ export default class ScreenController {
         this.#startGame();
       }
     });
-    shipPlacementForm.appendChild(placeShipsBtn);
+    shipsConfirmBtnDiv.appendChild(placeShipsBtn);
+
+    shipPreviewDiv.appendChild(shipsConfirmBtnDiv);
 
     pageMain.innerHTML = "";
-    pageMain.appendChild(shipPlacementForm);
+    pageMain.appendChild(shipPreviewDiv);
 
     this.#updateShipPlacementDisplay(player);
-    //   <form class="startForm" id="shipPlacementForm">
-    //     <div class="shipPlacement">
-    //       <h2>[PlayerName]</h2>
-    //       <h3>Place Your Ships</h3>
-    //       <div class="board">
-    //       </div>
+    // <div class="shipPreview">
+    //   <h2>[PlayerName]</h2>
+    //   <h3>Place Your Ships</h3>
+    //   <div class="board"></div>
+    //   <form class="shipPlacementForm">
+    //     <div>
+    //       <label for="ships">Ship</label>
+    //       <select name="ships" id="ships">
+    //         <option value="Carrier">Carrier(5)</option>
+    //         <option value="Battleship">Battleship(4)</option>
+    //         <option value="Destroyer">Destroyer(3)</option>
+    //         <option value="Submarine">Submarine(3)</option>
+    //         <option value="Patrol Boat">Patrol Boat(2)</option>
+    //       </select>
     //     </div>
-    //     <form class="singleShipPlacementForm">
-    //       <div>
-    //         <label for="ships">Ship</label>
-    //         <select name="ships" id="ships">
-    //           <option value="Carrier">Carrier</option>
-    //           <option value="Battleship">Battleship</option>
-    //           <option value="Destroyer">Destroyer</option>
-    //           <option value="Submarine">Submarine</option>
-    //           <option value="Patrol Boat">Patrol Boat</option>
-    //         </select>
-    //       </div>
-    //       <div>
-    //         <label for="row">Row</label>
-    //         <input type="number" name="row" id="row" min="0" max="9" />
-    //       </div>
-    //       <div>
-    //         <label for="column">Column</label>
-    //         <input type="number" name="column" id="column" min="0" max="9" />
-    //       </div>
-    //       <div>
-    //         <label for="horizontal">Horizontal </label>
-    //         <input type="radio" name="orientation" id="horizontal" value="horizontal" />
-    //         <label for="vertical">Vertical </label>
-    //         <input type="radio" name="orientation" id="vertical" value="vertical" />
-    //       </div>
-    //       <button class="shipPlacementBtn" type="submit">Place Ship</button>
-    //     </form>
-    //     <button class="shipPlacementBtn" type="button">Randomize Ships</button>
-    //     <button class="shipPlacementBtn" type="button">Clear Board</button>
-    //     <button class="placeShipsBtn" type="submit">Confirm Ship Placement</button>
-    //  </form>
+    //     <div>
+    //       <label for="row">Row</label>
+    //       <input type="number" name="row" id="row" min="0" max="9" />
+    //     </div>
+    //     <div>
+    //       <label for="column">Column</label>
+    //       <input type="number" name="column" id="column" min="0" max="9" />
+    //     </div>
+    //     <div>
+    //       <label for="horizontal">Horizontal </label>
+    //       <input type="radio" name="orientation" id="horizontal" value="horizontal" />
+    //       <label for="vertical">Vertical </label>
+    //       <input type="radio" name="orientation" id="vertical" value="vertical" />
+    //     </div>
+    //     <button type="submit">Place Ship</button>
+    //   </form>
+    //   <div class="shipPlacementBtns">
+    //     <button type="button">Randomize Ships</button>
+    //     <button type="button">Clear Board</button>
+    //   </div>
+    //   <div class="shipPlacementBtns">
+    //     <button type="submit">Confirm Ship Placement</button>
+    //   </div>
+    // </div>
   }
 
   #updateShipPlacementDisplay(player) {
     this.#drawBoard(
       player,
-      document.querySelector(".shipPlacement"),
+      document.querySelector(".shipPreview"),
       false,
       false
     );
@@ -722,16 +769,22 @@ export default class ScreenController {
 
     const boardShipsHeader = document.createElement("h3");
     boardShipsHeader.textContent = "Remaining Ships";
+
     boardShipsDiv.appendChild(boardShipsHeader);
+
+    const boardShipNamesDiv = document.createElement("div");
+    boardShipNamesDiv.className = "boardShipNames";
 
     player.ships.forEach(({ ship }) => {
       if (ship.isSunk()) {
         return;
       }
-      const shipSpan = document.createElement("span");
+      const shipSpan = document.createElement("p");
       shipSpan.innerText = `${ship.name}(${ship.shipLength})`;
-      boardShipsDiv.appendChild(shipSpan);
+      boardShipNamesDiv.appendChild(shipSpan);
     });
+
+    boardShipsDiv.appendChild(boardShipNamesDiv);
   }
 
   #handleRematch() {
