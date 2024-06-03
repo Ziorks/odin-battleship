@@ -58,17 +58,17 @@ export class Player {
     return [...previewBoard.board];
   }
 
-  setShipLocation(shipName, location, isHorizontal) {
+  setShipLocation(shipName, locationInput, isHorizontalInput) {
     if (this.#shipsConfirmed) {
       return false;
     }
 
-    const testShips = this.#ships.map((item) => {
-      if (item.ship.name === shipName) {
-        item.location = location;
-        item.isHorizontal = isHorizontal;
+    const testShips = this.#ships.map(({ ship, location, isHorizontal }) => {
+      if (ship.name === shipName) {
+        location = locationInput;
+        isHorizontal = isHorizontalInput;
       }
-      return item;
+      return { ship, location, isHorizontal };
     });
 
     const testBoard = new Gameboard();
@@ -81,9 +81,8 @@ export class Player {
 
     if (placed) {
       this.#ships = testShips;
-      return true;
     }
-    return false;
+    return placed;
   }
 
   clearShipLocations() {
