@@ -386,12 +386,13 @@ export default class ScreenController {
   }
 
   #showShipPlacementForm(player) {
-    let verticalMemory = false;
+    let vertical = false;
+
     const updatePreviewBoard = () => {
       this.#drawBoard(player, shipPreviewDiv, false, false);
     };
 
-    const updateShipsContainer = (vertical = false) => {
+    const updateShipsContainer = () => {
       shipsContainerDiv.innerHTML = "";
       player.ships.forEach((ship) => {
         if (ship.location) {
@@ -416,11 +417,37 @@ export default class ScreenController {
             dragableShipDiv.style.top = `${e.pageY - offsetY}px`;
           };
           const mouseupCb = () => {
-            //get row and column of boardspace mouse is over
-            //give player ship location of row/colum
+            const { width, height, bottom, left } =
+              dragableShipDiv.getBoundingClientRect();
+            const halfSpaceWidth = vertical ? width / 2 : height / 2;
+            const shipX = left + halfSpaceWidth;
+            const shipY = bottom - halfSpaceWidth;
+            let location = null;
+
+            for (let i = 0; i < boardDiv.childNodes.length; i++) {
+              const boardSpace = boardDiv.childNodes[i];
+              const { top, bottom, left, right } =
+                boardSpace.getBoundingClientRect();
+              const gridGapOffset = 1;
+              if (
+                shipX >= left - gridGapOffset &&
+                shipX <= right + gridGapOffset &&
+                shipY >= top - gridGapOffset &&
+                shipY <= bottom + gridGapOffset &&
+                boardSpace.dataset.row
+              ) {
+                location = [
+                  Number(boardSpace.dataset.row),
+                  Number(boardSpace.dataset.column),
+                ];
+                break;
+              }
+            }
+
+            player.setShipLocation(ship.ship.name, location, !vertical);
             dragableShipDiv.remove();
             updatePreviewBoard();
-            updateShipsContainer(verticalMemory);
+            updateShipsContainer();
             window.removeEventListener("mousemove", moveCb);
             window.removeEventListener("mouseup", mouseupCb);
           };
@@ -467,8 +494,8 @@ export default class ScreenController {
     toggleRotationBtn.type = "button";
     toggleRotationBtn.textContent = "Toggle Rotation";
     toggleRotationBtn.addEventListener("click", () => {
-      verticalMemory = !verticalMemory;
-      updateShipsContainer(verticalMemory);
+      vertical = !vertical;
+      updateShipsContainer();
     });
     toggleRotationBtnDiv.appendChild(toggleRotationBtn);
 
@@ -691,6 +718,8 @@ export default class ScreenController {
             boardDiv.appendChild(boardSpaceBtn);
           } else {
             boardSpaceDiv.className = "boardSpace";
+            boardSpaceDiv.dataset.row = boardRow;
+            boardSpaceDiv.dataset.column = boardColumn;
             if ((space.ship && !hideShips) || (space.ship && space.isHit)) {
               boardSpaceDiv.classList.add("ship");
             }
