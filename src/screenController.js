@@ -386,18 +386,48 @@ export default class ScreenController {
   }
 
   #showShipPlacementForm(player) {
+    let verticalMemory = false;
     const updatePreviewBoard = () => {
       this.#drawBoard(player, shipPreviewDiv, false, false);
     };
 
-    const updateShipsContainer = () => {
+    const updateShipsContainer = (vertical = false) => {
       shipsContainerDiv.innerHTML = "";
       player.ships.forEach((ship) => {
         if (ship.location) {
           return;
         }
+
         const dragableShipDiv = document.createElement("div");
         dragableShipDiv.className = "dragableShip";
+        if (vertical) {
+          dragableShipDiv.classList.add("vertical");
+        }
+        dragableShipDiv.addEventListener("mousedown", (e) => {
+          const { x, y } = dragableShipDiv.getBoundingClientRect();
+          const offsetX = e.clientX - x;
+          const offsetY = e.clientY - y;
+          dragableShipDiv.style.position = "absolute";
+          dragableShipDiv.style.left = `${e.pageX - offsetX}px`;
+          dragableShipDiv.style.top = `${e.pageY - offsetY}px`;
+
+          const moveCb = (e) => {
+            dragableShipDiv.style.left = `${e.pageX - offsetX}px`;
+            dragableShipDiv.style.top = `${e.pageY - offsetY}px`;
+          };
+          const mouseupCb = () => {
+            //get row and column of boardspace mouse is over
+            //give player ship location of row/colum
+            dragableShipDiv.remove();
+            updatePreviewBoard();
+            updateShipsContainer(verticalMemory);
+            window.removeEventListener("mousemove", moveCb);
+            window.removeEventListener("mouseup", mouseupCb);
+          };
+
+          window.addEventListener("mousemove", moveCb);
+          window.addEventListener("mouseup", mouseupCb);
+        });
 
         for (let i = 0; i < ship.ship.shipLength; i++) {
           const dragableShipSpace = document.createElement("div");
@@ -430,9 +460,19 @@ export default class ScreenController {
     dragAndDropHeader.textContent = "Drag and drop ships onto board.";
     shipPreviewDiv.appendChild(dragAndDropHeader);
 
-    const dragAndDropTip = document.createElement("p");
-    dragAndDropTip.textContent = "(press 'R' while dragging to rotate).";
-    shipPreviewDiv.appendChild(dragAndDropTip);
+    const toggleRotationBtnDiv = document.createElement("div");
+    toggleRotationBtnDiv.className = "shipPlacementBtns";
+
+    const toggleRotationBtn = document.createElement("button");
+    toggleRotationBtn.type = "button";
+    toggleRotationBtn.textContent = "Toggle Rotation";
+    toggleRotationBtn.addEventListener("click", () => {
+      verticalMemory = !verticalMemory;
+      updateShipsContainer(verticalMemory);
+    });
+    toggleRotationBtnDiv.appendChild(toggleRotationBtn);
+
+    shipPreviewDiv.appendChild(toggleRotationBtnDiv);
 
     const shipsContainerDiv = document.createElement("div");
     shipsContainerDiv.className = "shipsContainer";
@@ -490,7 +530,7 @@ export default class ScreenController {
     //   <h4>Place Your Ships</h4>
     //   <div class="board"></div>
     //   <h3>Drag and drop ships onto board</h3>
-    //   <p>(press "R" while dragging to rotate)</p>
+    //   <button>Toggle Rotation</button>
     //   <div class="shipContainer">
     //     <div class="dragableShip"></div>
     //     ...

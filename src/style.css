@@ -113,11 +113,16 @@ main {
   box-shadow: 3px 3px 10px rgb(0, 0, 0);
   display: grid;
   width: max-content;
+  height: max-content;
   gap: 2px;
   padding: 2px;
   grid-auto-flow: column;
   grid-auto-columns: var(--gridSize);
   grid-auto-rows: var(--gridSize);
+}
+
+.dragableShip.vertical {
+  grid-auto-flow: row;
 }
 
 .dragableShipSpace {
