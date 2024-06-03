@@ -2,6 +2,10 @@
   --gridSize: 25px;
 }
 
+::selection {
+  color: none;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -86,6 +90,7 @@ main {
   font-size: 1.2rem;
 }
 
+.game,
 .shipPreview {
   flex: 0;
   display: flex;
@@ -93,6 +98,7 @@ main {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  font-size: calc(var(--gridSize) * 0.8);
 }
 
 .shipsContainer {
@@ -143,21 +149,8 @@ main {
   font-size: 2rem;
 }
 
-.game,
-.shipPreview {
-  font-size: calc(var(--gridSize) * 0.8);
-}
-
-.game > * {
-  margin: 15px 0;
-}
-
-.lastAttack,
-.currentTurn {
-  text-align: center;
-}
-
 .gameOverMenu {
+  width: 100%;
   display: flex;
   justify-content: space-evenly;
 }
@@ -175,12 +168,15 @@ main {
 }
 
 .boardShips > h3 {
-  text-align: center;
   text-decoration: underline;
+  margin-bottom: 10px;
 }
 
 .boardShipNames {
+  font-size: 0.9em;
+  width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
 }

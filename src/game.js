@@ -90,7 +90,7 @@ export default class Game {
 
       if (this.#attackingPlayer instanceof Bot) {
         input = this.#attackingPlayer.getAttackLocation();
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       } else {
         input = await playerInput();
       }
