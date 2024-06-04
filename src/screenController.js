@@ -459,11 +459,14 @@ export default class ScreenController {
             dragableShipDiv.remove();
             updatePreviewBoard();
             updateShipsContainer();
+            document.body.style.removeProperty("cursor");
             window.removeEventListener("keydown", rotateCb);
             window.removeEventListener("mousemove", moveCb);
             window.removeEventListener("mouseup", dropCb);
           };
 
+          dragableShipDiv.style.cursor = "none";
+          document.body.style.cursor = "none";
           window.addEventListener("keydown", rotateCb);
           window.addEventListener("mousemove", moveCb);
           window.addEventListener("mouseup", dropCb);
