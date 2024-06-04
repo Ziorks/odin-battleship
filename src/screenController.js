@@ -406,15 +406,16 @@ export default class ScreenController {
 
         const grabCb = (e) => {
           const { x, y } = dragableShipDiv.getBoundingClientRect();
-          const offsetX = e.clientX - x;
-          const offsetY = e.clientY - y;
+          const startX = e.clientX;
+          const startY = e.clientY;
           dragableShipDiv.style.position = "absolute";
-          dragableShipDiv.style.left = `${e.pageX - offsetX}px`;
-          dragableShipDiv.style.top = `${e.pageY - offsetY}px`;
+          dragableShipDiv.style.left = `${x - startX + e.pageX}px`;
+          dragableShipDiv.style.top = `${y - startY + e.pageY}px`;
 
           const moveCb = (e) => {
-            dragableShipDiv.style.left = `${e.pageX - offsetX}px`;
-            dragableShipDiv.style.top = `${e.pageY - offsetY}px`;
+            const translateX = e.clientX - startX;
+            const translateY = e.clientY - startY;
+            dragableShipDiv.style.transform = `translate(${translateX}px, ${translateY}px)`;
           };
           const rotateCb = (e) => {
             if (e.key === "r") {
