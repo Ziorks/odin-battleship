@@ -716,6 +716,8 @@ export default class ScreenController {
   }
 
   #updateGameDisplay(message = "") {
+    //This is ugly and I hate it but it works
+    //Refactor this for sure if I update this
     const opponentContainer = document.getElementById("opponentContainer");
     const playerContainer = document.getElementById("playerContainer");
     const lastAttackP = document.querySelector(".lastAttack");
@@ -724,19 +726,25 @@ export default class ScreenController {
     lastAttackP.innerText = message;
     currentTurnP.innerText = `It's ${this.#game.attackingPlayer.name}'s turn.`;
 
-    opponentContainer.querySelector(".playerName").textContent =
-      this.#game.player2.name;
-    playerContainer.querySelector(".playerName").textContent =
-      this.#game.player1.name;
-
-    this.#updateBoardShipsDiv(this.#game.player2, opponentContainer);
-    this.#updateBoardShipsDiv(this.#game.player1, playerContainer);
-
     if (this.#game.gametype === "bots") {
+      opponentContainer.querySelector(".playerName").textContent =
+        this.#game.player2.name;
+      playerContainer.querySelector(".playerName").textContent =
+        this.#game.player1.name;
+      this.#updateBoardShipsDiv(this.#game.player2, opponentContainer);
+      this.#updateBoardShipsDiv(this.#game.player1, playerContainer);
       this.#drawBoard(this.#game.player2, opponentContainer, false, false);
       this.#drawBoard(this.#game.player1, playerContainer, false, false);
     } else if (this.#game.gametype === "pvb") {
-      const isPlayable = this.#game.attackingPlayer == this.#game.player1;
+      const isPlayable =
+        this.#game.attackingPlayer == this.#game.player1 &&
+        !this.#game.isGameOver;
+      opponentContainer.querySelector(".playerName").textContent =
+        this.#game.player2.name;
+      playerContainer.querySelector(".playerName").textContent =
+        this.#game.player1.name;
+      this.#updateBoardShipsDiv(this.#game.player2, opponentContainer);
+      this.#updateBoardShipsDiv(this.#game.player1, playerContainer);
       this.#drawBoard(this.#game.player2, opponentContainer, true, isPlayable);
       this.#drawBoard(this.#game.player1, playerContainer, false, false);
     } else if (this.#game.gametype === "pvp") {
